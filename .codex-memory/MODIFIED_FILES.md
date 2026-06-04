@@ -49,3 +49,19 @@
 | 2026-06-04 | `docs/APPLY_GUIDE.md` | 수정 | 전역 적용 안내 경로 갱신 |
 | 2026-06-04 | `docs/GLOBAL_REDO_CHECKLIST.md` | 수정 | 전역 재설정 체크리스트 경로 갱신 |
 | 2026-06-04 | `.codex-memory/*` | 수정 | 이동 결정, 체크리스트, 수정 파일 기록 반영 |
+| 2026-06-04 | `global/hooks/global_user_prompt_submit.ps1` | 수정 | 전역 운영 지침 문구 추가 |
+| 2026-06-04 | `global/hooks/global_session_start.ps1` | 수정 | 전역/프로젝트 hook 역할 분리 안내 추가 |
+| 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 전역 hook 운영 지침 추가 완료 반영 |
+| 2026-06-04 | `.codex-memory/QA.md` | 수정 | 전역 hook 운영 지침 검증 항목 추가 |
+| 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 이번 수정 파일 목록 반영 |
+| 2026-06-04 | `global/hooks/global_user_prompt_submit.ps1` | 수정 | 설명용 표현을 제거하고 중립 표현으로 정리 |
+| 2026-06-04 | `global/hooks.json` | 수정 | 전역 hook을 UserPromptSubmit, SessionStart, PostToolUse, Stop으로 분리 |
+| 2026-06-04 | `global/hooks/global_user_prompt_submit.ps1` | 수정 | 요청 시작 지침만 남기도록 축소 |
+| 2026-06-04 | `global/hooks/global_session_start.ps1` | 수정 | 세션 시작 memory 확인만 남기도록 축소 |
+| 2026-06-04 | `global/hooks/global_post_tool_use.ps1` | 생성 | 도구 사용 후 기록 확인 hook 추가 |
+| 2026-06-04 | `global/hooks/global_stop_check.ps1` | 생성 | 종료 전 검증/위험 확인 hook 추가 |
+| 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 이벤트별 hook 분리 완료 반영 |
+| 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 이벤트별 hook 분리 수정 파일 목록 반영 |
+| 2026-06-04 | `docs/GLOBAL_WORK_TEMPLATE.md` | 수정 | 새 전역 hook 스크립트 목록 반영 |
+| 2026-06-04 | `docs/GLOBAL_REDO_CHECKLIST.md` | 수정 | 새 전역 hook 복사/검증 항목 반영 |
+| 2026-06-04 | `.codex-memory/QA.md` | 수정 | 이벤트별 전역 hook 분리 검증 결과 반영 |

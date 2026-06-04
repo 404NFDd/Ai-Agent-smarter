@@ -24,6 +24,31 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_post_tool_use.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_post_tool_use.ps1\"",
+            "statusMessage": "전역 도구 사용 기록 확인 중"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_stop_check.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_stop_check.ps1\"",
+            "timeout": 30,
+            "statusMessage": "전역 완료 조건 확인 중"
+          }
+        ]
+      }
     ]
   }
 }

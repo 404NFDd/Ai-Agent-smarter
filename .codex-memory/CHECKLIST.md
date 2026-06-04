@@ -36,3 +36,5 @@
 - [x] UserPromptSubmit/SessionStart hook 출력 표시 문구 추가
 - [x] 실제 전역 hook과 템플릿 hook 실행 검증
 - [x] `templates/global`을 루트 `global` 폴더로 이동
+- [x] 전역 hook 템플릿에 중립적인 운영 지침 추가
+- [x] 전역 hook 운영 지침을 이벤트별 단일 목적 hook으로 분리

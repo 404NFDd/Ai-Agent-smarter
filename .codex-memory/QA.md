@@ -38,6 +38,18 @@
 | `ConvertFrom-Json` on `global/hooks.json` | 통과 | 2026-06-04 | 이동 후 전역 hook JSON 형식 확인 |
 | PowerShell parser on `global/hooks/*.ps1` and project hooks | 통과 | 2026-06-04 | 이동 후 전역/프로젝트 hook 스크립트 6개 파싱 확인 |
 | `.ps1` BOM byte check on `global/hooks/*.ps1` and project hooks | 통과 | 2026-06-04 | 이동 후 전역/프로젝트 hook 스크립트 6개 모두 UTF-8 BOM 확인 |
+| `ConvertFrom-Json` on `global/hooks.json` | 통과 | 2026-06-04 | 전역 운영 지침 추가 후 JSON 형식 재확인 |
+| `powershell.exe -File global/hooks/global_user_prompt_submit.ps1` | 통과 | 2026-06-04 | 전역 UserPromptSubmit 운영 지침 additionalContext 출력 확인 |
+| `powershell.exe -File global/hooks/global_session_start.ps1` | 통과 | 2026-06-04 | 전역 SessionStart 운영 지침 additionalContext 출력 확인 |
+| `.ps1` BOM byte check on `global/hooks/*.ps1` | 통과 | 2026-06-04 | PowerShell 5.1 한글 안정성을 위해 BOM 유지 확인 |
+| 비유 표현 검색 | 통과 | 2026-06-04 | 설명용 표현이 hook 템플릿과 기록 파일에 남지 않았음을 확인 |
+| `powershell.exe -File global/hooks/global_user_prompt_submit.ps1` | 통과 | 2026-06-04 | UserPromptSubmit 출력이 중립적인 운영 지침으로 정리됐음을 확인 |
+| `ConvertFrom-Json` on `global/hooks.json` | 통과 | 2026-06-04 | 전역 hook을 이벤트별 단일 목적 구조로 분리한 뒤 JSON 형식 확인 |
+| `powershell.exe -File global/hooks/global_user_prompt_submit.ps1` | 통과 | 2026-06-04 | 요청 시작 지침만 출력하는지 확인 |
+| `powershell.exe -File global/hooks/global_session_start.ps1` | 통과 | 2026-06-04 | 세션 시작 memory 확인만 출력하는지 확인 |
+| `powershell.exe -File global/hooks/global_post_tool_use.ps1` | 통과 | 2026-06-04 | 도구 사용 후 기록 확인만 출력하는지 확인 |
+| `powershell.exe -File global/hooks/global_stop_check.ps1` | 통과 | 2026-06-04 | 종료 전 검증/위험 확인과 allow decision 출력 확인 |
+| `.ps1` BOM byte check on `global/hooks/*.ps1` | 통과 | 2026-06-04 | 전역 hook 스크립트 4개 모두 UTF-8 BOM 확인 |
 
 ## 실패한 검증
 
@@ -59,3 +71,5 @@
 - PowerShell 파이프 입력의 한글 인코딩은 호출 환경에 따라 달라질 수 있으므로 실제 Codex hook stdin으로 한 번 더 리허설해야 한다.
 - 삭제된 `.codex` 폴더 안의 과거 대화 로그는 백업, 휴지통, 파일 복구 도구가 없으면 이 프로젝트 기록만으로는 복원할 수 없다.
 - 전역 hook 스크립트 출력에는 표시 문구가 들어갔지만, 실행 중인 Codex 세션이 hook 컨텍스트를 새로 주입하는지는 새 요청 또는 재시작으로 확인해야 한다.
+- 이번 전역 운영 지침 추가도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
+- 이벤트별 hook 분리도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.

@@ -4,23 +4,17 @@
 $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
 $additionalContext = @"
-[전역 세션 시작 알림]
-응답 첫 줄에 `[HOOK: SessionStart 읽음]`을 표시하세요.
-프로젝트 루트에 다음 memory 파일이 있으면 먼저 확인하세요.
-- AGENTS.md
-- .codex-memory/PLAN.md
-- .codex-memory/CONTEXT.md
-- .codex-memory/CHECKLIST.md
-- .codex-memory/DECISIONS.md
-- .codex-memory/QA.md
+[전역 종료 전 확인]
+- 최종 답변 전 검증 결과, 실행하지 못한 검증, 남은 위험을 확인하세요.
 "@
 
 $payload = @{
+    decision = "allow"
+    reason = "전역 종료 전 확인"
     hookSpecificOutput = @{
-        hookEventName = "SessionStart"
+        hookEventName = "Stop"
         additionalContext = $additionalContext
     }
 }
 
 Write-Output ($payload | ConvertTo-Json -Depth 5 -Compress)
-

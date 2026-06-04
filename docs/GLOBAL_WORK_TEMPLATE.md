@@ -84,6 +84,8 @@ global/config.features.toml
 ```text
 global/hooks.json
 global/hooks/global_user_prompt_submit.ps1
+global/hooks/global_post_tool_use.ps1
+global/hooks/global_stop_check.ps1
 ```
 
 체크리스트:
@@ -104,6 +106,8 @@ global/hooks/global_user_prompt_submit.ps1
 
 ```text
 global/hooks/global_session_start.ps1
+global/hooks/global_post_tool_use.ps1
+global/hooks/global_stop_check.ps1
 ```
 
 체크리스트:

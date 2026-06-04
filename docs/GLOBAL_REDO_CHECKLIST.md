@@ -110,6 +110,8 @@ multi_agent = true
 global/hooks.json
 global/hooks/global_user_prompt_submit.ps1
 global/hooks/global_session_start.ps1
+global/hooks/global_post_tool_use.ps1
+global/hooks/global_stop_check.ps1
 ```
 
 작업:
@@ -117,6 +119,8 @@ global/hooks/global_session_start.ps1
 - [ ] `C:\Users\msk23\.codex\hooks\` 폴더를 만든다.
 - [ ] `global_user_prompt_submit.ps1`을 hooks 폴더에 복사한다.
 - [ ] `global_session_start.ps1`을 hooks 폴더에 복사한다.
+- [ ] `global_post_tool_use.ps1`을 hooks 폴더에 복사한다.
+- [ ] `global_stop_check.ps1`을 hooks 폴더에 복사한다.
 - [ ] `hooks.json`을 전역 폴더에 병합하거나 복사한다.
 - [ ] hook 명령이 `powershell.exe`를 사용하는지 확인한다.
 - [ ] `.ps1` 파일이 UTF-8 with BOM인지 확인한다.
@@ -127,6 +131,8 @@ global/hooks/global_session_start.ps1
 Get-Content "C:\Users\msk23\.codex\hooks.json" -Encoding UTF8 -Raw | ConvertFrom-Json
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_user_prompt_submit.ps1"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_session_start.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_post_tool_use.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_stop_check.ps1"
 ```
 
 ## 6. Codex 재시작 후 확인
