@@ -38,3 +38,5 @@
 - [x] `templates/global`을 루트 `global` 폴더로 이동
 - [x] 전역 hook 템플릿에 중립적인 운영 지침 추가
 - [x] 전역 hook 운영 지침을 이벤트별 단일 목적 hook으로 분리
+- [x] 프로젝트 필수/추가 skill 디렉터리와 빈 SKILL.md 추가
+- [x] 프로젝트 hook을 새 skill 라우팅과 위험 작업 전 확인 구조로 갱신

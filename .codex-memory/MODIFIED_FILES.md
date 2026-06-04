@@ -65,3 +65,11 @@
 | 2026-06-04 | `docs/GLOBAL_WORK_TEMPLATE.md` | 수정 | 새 전역 hook 스크립트 목록 반영 |
 | 2026-06-04 | `docs/GLOBAL_REDO_CHECKLIST.md` | 수정 | 새 전역 hook 복사/검증 항목 반영 |
 | 2026-06-04 | `.codex-memory/QA.md` | 수정 | 이벤트별 전역 hook 분리 검증 결과 반영 |
+| 2026-06-04 | `templates/project/.agents/skills/*/SKILL.md` | 생성/정리 | 필수/추가 skill 목록 기준으로 빈 SKILL.md 구성 |
+| 2026-06-04 | `templates/project/.codex/hooks.json` | 수정 | PreToolUse, PermissionRequest 추가 및 matcher 조정 |
+| 2026-06-04 | `templates/project/.codex/hooks/user_prompt_submit.ps1` | 수정 | 새 skill 목록 기준 라우팅으로 갱신 |
+| 2026-06-04 | `templates/project/.codex/hooks/pre_tool_use.ps1` | 생성 | 위험 작업 전 관련 skill 확인 hook 추가 |
+| 2026-06-04 | `docs/PROJECT_WORK_TEMPLATE.md` | 수정 | 새 skill 목록과 pre_tool_use hook 반영 |
+| 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 프로젝트 skill/hook 갱신 완료 반영 |
+| 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 프로젝트 skill/hook 갱신 파일 목록 반영 |
+| 2026-06-04 | `.codex-memory/QA.md` | 수정 | 프로젝트 skill/hook 갱신 검증 결과 반영 |

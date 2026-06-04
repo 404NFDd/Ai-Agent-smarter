@@ -56,17 +56,30 @@ templates/project/.codex-memory/MODIFIED_FILES.md
 템플릿:
 
 ```text
-templates/project/.agents/skills/backend/SKILL.md
-templates/project/.agents/skills/frontend/SKILL.md
-templates/project/.agents/skills/database/SKILL.md
-templates/project/.agents/skills/testing/SKILL.md
+templates/project/.agents/skills/codebase-onboarding/SKILL.md
+templates/project/.agents/skills/implementation-planning/SKILL.md
+templates/project/.agents/skills/bugfix-debugging/SKILL.md
+templates/project/.agents/skills/testing-qa/SKILL.md
+templates/project/.agents/skills/code-style/SKILL.md
+templates/project/.agents/skills/git-workflow/SKILL.md
+templates/project/.agents/skills/documentation/SKILL.md
+templates/project/.agents/skills/review/SKILL.md
+templates/project/.agents/skills/frontend-ui/SKILL.md
+templates/project/.agents/skills/backend-api/SKILL.md
+templates/project/.agents/skills/database-migration/SKILL.md
 templates/project/.agents/skills/security/SKILL.md
+templates/project/.agents/skills/performance/SKILL.md
+templates/project/.agents/skills/dependency-management/SKILL.md
+templates/project/.agents/skills/release-deploy/SKILL.md
+templates/project/.agents/skills/observability/SKILL.md
+templates/project/.agents/skills/refactoring/SKILL.md
+templates/project/.agents/skills/ai-agent-collaboration/SKILL.md
 ```
 
 체크리스트:
 
 - [ ] 실제 프로젝트에 필요한 skill만 남겼다.
-- [ ] 각 skill의 `description`에 트리거 키워드가 있다.
+- [ ] 각 `SKILL.md` 내용을 프로젝트 특성에 맞게 채웠다.
 - [ ] 완료 전 확인 항목이 검증 가능하다.
 
 ## 4. 프로젝트 hooks
@@ -85,6 +98,7 @@ templates/project/.agents/skills/security/SKILL.md
 templates/project/.codex/hooks.json
 templates/project/.codex/hooks/user_prompt_submit.ps1
 templates/project/.codex/hooks/session_start.ps1
+templates/project/.codex/hooks/pre_tool_use.ps1
 templates/project/.codex/hooks/post_tool_use.ps1
 templates/project/.codex/hooks/stop_guard.ps1
 ```
@@ -95,6 +109,7 @@ templates/project/.codex/hooks/stop_guard.ps1
 - [ ] 모든 `.ps1` 파일이 UTF-8 with BOM이다.
 - [ ] `UserPromptSubmit`이 요청 유형에 맞는 skill을 제안한다.
 - [ ] `SessionStart`가 `.codex-memory` 확인을 상기한다.
+- [ ] `PreToolUse`와 `PermissionRequest`가 위험 작업 전 관련 skill을 제안한다.
 - [ ] `PostToolUse`가 수정 또는 검증 흔적을 기록한다.
 - [ ] `Stop`이 QA 누락을 차단한다.
 

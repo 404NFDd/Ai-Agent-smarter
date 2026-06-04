@@ -25,9 +25,35 @@
         ]
       }
     ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .codex/hooks/pre_tool_use.ps1",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .codex/hooks/pre_tool_use.ps1",
+            "statusMessage": "위험 작업 여부 확인 중"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "matcher": "Bash|apply_patch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .codex/hooks/pre_tool_use.ps1",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File .codex/hooks/pre_tool_use.ps1",
+            "statusMessage": "승인 요청 맥락 확인 중"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
-        "matcher": "apply_patch|shell_command",
+        "matcher": "Bash|apply_patch",
         "hooks": [
           {
             "type": "command",

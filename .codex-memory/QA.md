@@ -50,6 +50,14 @@
 | `powershell.exe -File global/hooks/global_post_tool_use.ps1` | 통과 | 2026-06-04 | 도구 사용 후 기록 확인만 출력하는지 확인 |
 | `powershell.exe -File global/hooks/global_stop_check.ps1` | 통과 | 2026-06-04 | 종료 전 검증/위험 확인과 allow decision 출력 확인 |
 | `.ps1` BOM byte check on `global/hooks/*.ps1` | 통과 | 2026-06-04 | 전역 hook 스크립트 4개 모두 UTF-8 BOM 확인 |
+| `ConvertFrom-Json` on `templates/project/.codex/hooks.json` | 통과 | 2026-06-04 | 프로젝트 hook에 PreToolUse, PermissionRequest 추가 후 JSON 형식 확인 |
+| `powershell.exe -File templates/project/.codex/hooks/user_prompt_submit.ps1` | 통과 | 2026-06-04 | `login API auth bug fix` 요청에서 bugfix, backend-api, security skill 후보 확인 |
+| `powershell.exe -File templates/project/.codex/hooks/user_prompt_submit.ps1` | 통과 | 2026-06-04 | `review docs and commit PR` 요청에서 git-workflow, documentation, review skill 후보 확인 |
+| `powershell.exe -File templates/project/.codex/hooks/pre_tool_use.ps1` | 통과 | 2026-06-04 | dependency, migration 위험 작업 전 skill 후보 확인 |
+| `.ps1` BOM byte check on `templates/project/.codex/hooks/*.ps1` | 통과 | 2026-06-04 | 프로젝트 hook 스크립트 5개 모두 UTF-8 BOM 확인 |
+| `rg --files --hidden templates/project/.agents/skills` | 통과 | 2026-06-04 | 필수/추가 skill 18개 `SKILL.md` 파일 확인 |
+| `Get-ChildItem ... SKILL.md length` | 통과 | 2026-06-04 | 모든 프로젝트 `SKILL.md`가 0바이트 빈 파일임을 확인 |
+| 이전 축약 skill 경로 검색 | 통과 | 2026-06-04 | `backend/frontend/database/testing` skill 경로 참조가 남지 않았음을 확인 |
 
 ## 실패한 검증
 
@@ -73,3 +81,4 @@
 - 전역 hook 스크립트 출력에는 표시 문구가 들어갔지만, 실행 중인 Codex 세션이 hook 컨텍스트를 새로 주입하는지는 새 요청 또는 재시작으로 확인해야 한다.
 - 이번 전역 운영 지침 추가도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
 - 이벤트별 hook 분리도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
+- 새 프로젝트 skill 파일은 요청대로 내용 없이 생성했으므로, 실제 대상 프로젝트 적용 시 각 `SKILL.md` 본문을 별도로 채워야 한다.
