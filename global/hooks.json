@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_user_prompt_submit.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_user_prompt_submit.ps1\"",
+            "statusMessage": "전역 요청 컨텍스트 확인 중"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_session_start.ps1\"",
+            "commandWindows": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"{{CODEX_HOME}}\\hooks\\global_session_start.ps1\"",
+            "statusMessage": "전역 세션 컨텍스트 확인 중"
+          }
+        ]
+      }
+    ]
+  }
+}

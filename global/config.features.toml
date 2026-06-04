@@ -1,0 +1,6 @@
+# 기존 config.toml의 [features] 섹션에 병합한다.
+# [features] 섹션을 중복 생성하지 않는다.
+
+[features]
+hooks = true
+multi_agent = true
