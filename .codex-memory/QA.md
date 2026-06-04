@@ -58,6 +58,9 @@
 | `rg --files --hidden templates/project/.agents/skills` | 통과 | 2026-06-04 | 필수/추가 skill 18개 `SKILL.md` 파일 확인 |
 | `Get-ChildItem ... SKILL.md length` | 통과 | 2026-06-04 | 모든 프로젝트 `SKILL.md`가 0바이트 빈 파일임을 확인 |
 | 이전 축약 skill 경로 검색 | 통과 | 2026-06-04 | `backend/frontend/database/testing` skill 경로 참조가 남지 않았음을 확인 |
+| `SKILL.md frontmatter/name/description/empty validation` | 통과 | 2026-06-04 | 18개 skill 모두 폴더명과 `name` 일치, `description` 존재, 빈 파일 없음 |
+| `Hook skill references path validation` | 통과 | 2026-06-04 | `user_prompt_submit.ps1`, `pre_tool_use.ps1`가 참조하는 18개 skill 경로 존재 확인 |
+| `git diff --stat` | 통과 | 2026-06-04 | 18개 `SKILL.md`에 총 665줄 추가 확인 |
 
 ## 실패한 검증
 
@@ -66,6 +69,7 @@
 | `Get-Content ... | Select-Object -Index 1..80` | PowerShell에서 `1..80`이 `-Index` 값으로 직접 바인딩되지 않음 | `Select-Object -First 100`으로 다시 확인 |
 | 초기 PowerShell parser on `*.ps1` | BOM 없는 UTF-8 스크립트의 한글 문자열 파싱 오류 | hook `.ps1` 템플릿 문자열을 ASCII로 수정 후 재검증 통과 |
 | 최초 전역 `hooks.json` 검증 병렬 실행 | 샌드박스 준비 단계 오류 | 동일 검증을 단독 escalated 실행으로 재시도해 통과 |
+| skill 검증 병렬 실행 일부 | Windows sandbox setup refresh 오류 | 동일 frontmatter/경로 검증을 단독 escalated 실행으로 재시도해 통과 |
 
 ## 수동 확인 필요
 
@@ -81,4 +85,4 @@
 - 전역 hook 스크립트 출력에는 표시 문구가 들어갔지만, 실행 중인 Codex 세션이 hook 컨텍스트를 새로 주입하는지는 새 요청 또는 재시작으로 확인해야 한다.
 - 이번 전역 운영 지침 추가도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
 - 이벤트별 hook 분리도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
-- 새 프로젝트 skill 파일은 요청대로 내용 없이 생성했으므로, 실제 대상 프로젝트 적용 시 각 `SKILL.md` 본문을 별도로 채워야 한다.
+- skill 본문은 범용 템플릿 기준이므로, 실제 대상 프로젝트 적용 시 프레임워크별 명령과 조직 규칙은 프로젝트별 `references/`나 문서로 보강해야 한다.

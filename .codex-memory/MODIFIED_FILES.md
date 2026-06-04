@@ -73,3 +73,7 @@
 | 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 프로젝트 skill/hook 갱신 완료 반영 |
 | 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 프로젝트 skill/hook 갱신 파일 목록 반영 |
 | 2026-06-04 | `.codex-memory/QA.md` | 수정 | 프로젝트 skill/hook 갱신 검증 결과 반영 |
+| 2026-06-04 | `templates/project/.agents/skills/*/SKILL.md` | 수정 | 18개 skill에 frontmatter와 절차형 실행 매뉴얼 본문 추가 |
+| 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 프로젝트 skill 본문 추가 완료 반영 |
+| 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 프로젝트 skill 본문 추가 파일 목록 반영 |
+| 2026-06-04 | `.codex-memory/QA.md` | 수정 | 프로젝트 skill 본문 추가 검증 결과 반영 |
