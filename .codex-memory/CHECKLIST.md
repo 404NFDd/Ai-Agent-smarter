@@ -41,3 +41,5 @@
 - [x] 프로젝트 필수/추가 skill 디렉터리와 빈 SKILL.md 추가
 - [x] 프로젝트 hook을 새 skill 라우팅과 위험 작업 전 확인 구조로 갱신
 - [x] 프로젝트 skill 18개 `SKILL.md`에 실행 매뉴얼 본문 추가
+- [x] skill 피드백 반영: RFC 9457, WCAG/APG, OWASP API4, 테스트 fixture, skill 연계 보강
+- [x] `resilience`, `i18n-time-currency` skill 신설과 hook 라우팅 추가

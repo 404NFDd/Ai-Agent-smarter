@@ -9,6 +9,13 @@ description: performance, perf, slow, cache, bottleneck, bundle, 성능, 느림,
 
 측정 없이 추측으로 최적화하지 않고, 사용자 체감 또는 시스템 병목에 직접 연결된 문제를 줄인다.
 
+## 함께 적용하는 스킬
+
+- API 처리량, pagination, upload, expensive query는 `../backend-api/SKILL.md`를 함께 적용한다.
+- timeout, retry, queue, rate limit, quota는 `../resilience/SKILL.md`를 함께 적용한다.
+- query plan, index, transaction 병목은 `../database-migration/SKILL.md`를 함께 적용한다.
+- 전후 측정과 회귀 검증은 `../testing-qa/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 느린 경로, 입력 크기, 데이터 양, 사용자 환경, 재현 조건을 확인한다.

@@ -9,6 +9,12 @@ description: git, branch, commit, PR, push, dirty worktree, 변경 파일 보호
 
 사용자 변경을 보호하면서 필요한 git 작업만 수행한다.
 
+## 함께 적용하는 스킬
+
+- 커밋 전 검증은 `../testing-qa/SKILL.md`를 함께 적용한다.
+- 릴리즈 브랜치, tag, push는 `../release-deploy/SKILL.md`를 함께 적용한다.
+- 변경 리뷰가 필요하면 `../review/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - `git status --short`로 현재 변경 상태를 확인한다.

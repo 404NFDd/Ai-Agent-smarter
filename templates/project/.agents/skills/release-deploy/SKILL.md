@@ -9,6 +9,13 @@ description: release, deploy, version, tag, publish, rollback, 배포, 릴리즈
 
 릴리즈와 배포 변경이 검증, migration, 설정, rollback 관점에서 빠짐없이 준비되게 한다.
 
+## 함께 적용하는 스킬
+
+- 배포 전 검증은 `../testing-qa/SKILL.md`를 함께 적용한다.
+- migration 포함 배포는 `../database-migration/SKILL.md`를 함께 적용한다.
+- 환경 변수, secret, 권한 변경은 `../security/SKILL.md`를 함께 적용한다.
+- 장애 대응과 rollback 검토는 `../resilience/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 배포 대상 환경, 브랜치, 버전 정책, CI/CD 흐름을 확인한다.

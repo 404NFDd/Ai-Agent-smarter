@@ -77,3 +77,14 @@
 | 2026-06-04 | `.codex-memory/CHECKLIST.md` | 수정 | 프로젝트 skill 본문 추가 완료 반영 |
 | 2026-06-04 | `.codex-memory/MODIFIED_FILES.md` | 수정 | 프로젝트 skill 본문 추가 파일 목록 반영 |
 | 2026-06-04 | `.codex-memory/QA.md` | 수정 | 프로젝트 skill 본문 추가 검증 결과 반영 |
+| 2026-06-04 | `templates/project/.agents/skills/backend-api/SKILL.md` | 수정 | RFC 9457 표준 멤버, extension member, 리소스 제한, security 위임 기준 반영 |
+| 2026-06-04 | `templates/project/.agents/skills/frontend-ui/SKILL.md` | 수정 | WCAG 2.2 색상 대비와 W3C APG modal pattern 기준 보강 |
+| 2026-06-04 | `templates/project/.agents/skills/testing-qa/SKILL.md` | 수정 | 테스트 피라미드 출처 일반화, fixture/secret 분리 기준 추가 |
+| 2026-06-04 | `templates/project/.agents/skills/security/SKILL.md` | 수정 | 입력 검증, 객체 단위 권한, secret 비노출 단일 기준과 testing 연계 추가 |
+| 2026-06-04 | `templates/project/.agents/skills/*/SKILL.md` | 수정 | 모든 skill에 `함께 적용하는 스킬` 연계 섹션 추가 또는 보강 |
+| 2026-06-04 | `templates/project/.agents/skills/resilience/SKILL.md` | 생성 | timeout, retry, idempotency, rate limit, quota 매뉴얼 추가 |
+| 2026-06-04 | `templates/project/.agents/skills/i18n-time-currency/SKILL.md` | 생성 | i18n, timezone, date, currency 매뉴얼 추가 |
+| 2026-06-04 | `templates/project/.codex/hooks/user_prompt_submit.ps1` | 수정 | resilience, i18n-time-currency, contrast, fixture, resource consumption 라우팅 추가 |
+| 2026-06-04 | `templates/project/.codex/hooks/pre_tool_use.ps1` | 수정 | resilience, i18n-time-currency 위험 작업 전 skill 후보 추가 |
+| 2026-06-04 | `docs/PROJECT_WORK_TEMPLATE.md` | 수정 | 새 skill 2개와 skill 연계 체크리스트 반영 |
+| 2026-06-04 | `.codex-memory/*` | 수정 | 이번 피드백 반영의 결정, 체크리스트, 수정 파일, QA 기록 추가 |

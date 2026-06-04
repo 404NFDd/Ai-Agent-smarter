@@ -9,11 +9,19 @@ description: 버그, 오류, 에러, 실패, 고쳐, fix, debug, failure, 재현
 
 증상을 재현하고 원인을 좁힌 뒤, 가장 작은 수정으로 회귀를 막는다.
 
+## 함께 적용하는 스킬
+
+- API 버그는 `../backend-api/SKILL.md`를 함께 적용한다.
+- UI 버그는 `../frontend-ui/SKILL.md`를 함께 적용한다.
+- DB나 migration 버그는 `../database-migration/SKILL.md`를 함께 적용한다.
+- 인증, 권한, secret, 입력 검증 버그는 `../security/SKILL.md`를 함께 적용한다.
+- 재현과 회귀 검증은 `../testing-qa/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 실패 로그, 사용자 설명, 재현 단계, 기대 동작과 실제 동작을 분리한다.
 - 최근 변경, 관련 테스트, 오류가 발생한 입력과 환경을 확인한다.
-- 버그가 UI, API, DB, 보안 중 어디에 걸치는지 판단하고 관련 skill도 함께 확인한다.
+- 버그가 UI, API, DB, 보안, resilience, i18n 중 어디에 걸치는지 판단하고 관련 skill도 함께 확인한다.
 
 ## 디버깅 순서
 

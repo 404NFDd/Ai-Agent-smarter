@@ -61,6 +61,17 @@
 | `SKILL.md frontmatter/name/description/empty validation` | 통과 | 2026-06-04 | 18개 skill 모두 폴더명과 `name` 일치, `description` 존재, 빈 파일 없음 |
 | `Hook skill references path validation` | 통과 | 2026-06-04 | `user_prompt_submit.ps1`, `pre_tool_use.ps1`가 참조하는 18개 skill 경로 존재 확인 |
 | `git diff --stat` | 통과 | 2026-06-04 | 18개 `SKILL.md`에 총 665줄 추가 확인 |
+| RFC 9457 / WCAG 2.2 / W3C APG / OWASP API4 원문 확인 | 통과 | 2026-06-04 | RFC 9457 표준 멤버, WCAG 1.4.3 대비 수치, APG modal focus, API4 resource limit 기준 확인 |
+| `SKILL.md frontmatter/name/description/linked-section validation` | 통과 | 2026-06-04 | 20개 skill 모두 폴더명과 `name` 일치, `description` 존재, `함께 적용하는 스킬` 섹션 존재 |
+| `Skill cross references path validation` | 통과 | 2026-06-04 | skill 본문 내 `../*/SKILL.md` 참조 경로가 모두 존재함을 확인 |
+| `ConvertFrom-Json` on `templates/project/.codex/hooks.json` | 통과 | 2026-06-04 | 프로젝트 hook JSON 형식 확인 |
+| PowerShell parser on `templates/project/.codex/hooks/*.ps1` | 통과 | 2026-06-04 | user_prompt_submit/pre_tool_use 수정 후 프로젝트 hook 스크립트 파싱 확인 |
+| `rg` feedback keyword check | 통과 | 2026-06-04 | 테스트 피라미드 특정 출처 문구 제거, WCAG/APG/API4/fixture/resilience/i18n 항목 존재 확인 |
+| hook routing example: `API rate limit retry timeout 추가` | 통과 | 2026-06-04 | backend-api, resilience skill 후보 출력 확인 |
+| hook routing example: `timezone currency formatting 테스트` | 통과 | 2026-06-04 | i18n-time-currency skill 후보 출력 확인, `formatting`이 frontend form으로 오탐되지 않음 |
+| hook routing example: `modal color contrast accessibility 확인` | 통과 | 2026-06-04 | frontend-ui skill 후보 출력 확인 |
+| hook skill references path validation | 통과 | 2026-06-04 | user_prompt_submit/pre_tool_use가 참조하는 20개 skill 경로 존재 확인 |
+| `.ps1` BOM byte check on project hooks | 통과 | 2026-06-04 | 프로젝트 hook 스크립트 5개 모두 UTF-8 BOM 유지 확인 |
 
 ## 실패한 검증
 
@@ -70,6 +81,7 @@
 | 초기 PowerShell parser on `*.ps1` | BOM 없는 UTF-8 스크립트의 한글 문자열 파싱 오류 | hook `.ps1` 템플릿 문자열을 ASCII로 수정 후 재검증 통과 |
 | 최초 전역 `hooks.json` 검증 병렬 실행 | 샌드박스 준비 단계 오류 | 동일 검증을 단독 escalated 실행으로 재시도해 통과 |
 | skill 검증 병렬 실행 일부 | Windows sandbox setup refresh 오류 | 동일 frontmatter/경로 검증을 단독 escalated 실행으로 재시도해 통과 |
+| 이번 skill/hook 검증 병렬 실행 일부 | Windows sandbox setup refresh 오류 | 동일 상호 참조, PowerShell 파싱, hook 라우팅, BOM 검증을 단독 escalated 실행으로 재시도해 통과 |
 
 ## 수동 확인 필요
 
@@ -86,3 +98,4 @@
 - 이번 전역 운영 지침 추가도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
 - 이벤트별 hook 분리도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
 - skill 본문은 범용 템플릿 기준이므로, 실제 대상 프로젝트 적용 시 프레임워크별 명령과 조직 규칙은 프로젝트별 `references/`나 문서로 보강해야 한다.
+- `resilience`, `i18n-time-currency`는 범용 템플릿 skill로 추가했지만, 실제 프로젝트 적용 시 사용하는 HTTP client, queue, DB, i18n 라이브러리별 세부 reference가 필요할 수 있다.

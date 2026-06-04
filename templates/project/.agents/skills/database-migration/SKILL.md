@@ -9,6 +9,13 @@ description: DB, database, migration, schema, table, index, query, transaction, 
 
 데이터를 보존하고 배포 중 호환성을 유지하면서 schema와 query를 변경한다.
 
+## 함께 적용하는 스킬
+
+- API 계약이나 query 호출부가 바뀌면 `../backend-api/SKILL.md`를 함께 적용한다.
+- seed, fixture, 권한별 데이터 접근이 걸리면 `../security/SKILL.md`를 함께 적용한다.
+- migration과 query 변경은 `../testing-qa/SKILL.md`로 검증한다.
+- timeout, retry, idempotency, transaction 재시도가 걸리면 `../resilience/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - schema, migration, model, query 호출부, seed, 테스트 데이터를 함께 확인한다.

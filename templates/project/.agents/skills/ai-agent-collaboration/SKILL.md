@@ -9,6 +9,12 @@ description: Codex, agent, collaboration, handoff, 중간 보고, 질문, 협업
 
 사용자와 Codex가 같은 작업 상태를 공유하고, 질문이 필요한 순간과 바로 실행할 순간을 구분한다.
 
+## 함께 적용하는 스킬
+
+- 계획이 필요한 작업은 `../implementation-planning/SKILL.md`를 함께 적용한다.
+- 완료 전 검증과 보고는 `../testing-qa/SKILL.md`를 함께 적용한다.
+- 리뷰 요청은 `../review/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 사용자 요청이 구현, 조사, 리뷰, 계획, 질문 중 무엇인지 판단한다.

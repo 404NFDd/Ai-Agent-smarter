@@ -22,7 +22,7 @@ if ($prompt -match '(?i)bug|error|fail|failure|fix|debug|repro|버그|오류|에
     Add-Skill '.agents/skills/bugfix-debugging/SKILL.md'
 }
 
-if ($prompt -match '(?i)test|lint|typecheck|build|verify|qa|coverage|테스트|검증|빌드|타입체크') {
+if ($prompt -match '(?i)test|lint|typecheck|build|verify|qa|coverage|fixture|test data|테스트|검증|빌드|타입체크|테스트 데이터') {
     Add-Skill '.agents/skills/testing-qa/SKILL.md'
 }
 
@@ -30,11 +30,11 @@ if ($prompt -match '(?i)implement|add|build|feature|plan|큰 작업|만들|추�
     Add-Skill '.agents/skills/implementation-planning/SKILL.md'
 }
 
-if ($prompt -match '(?i)api|server|route|controller|endpoint|service|서버|엔드포인트') {
+if ($prompt -match '(?i)api|server|route|controller|endpoint|service|rate limit|quota|resource consumption|pagination|upload|서버|엔드포인트|리소스|업로드') {
     Add-Skill '.agents/skills/backend-api/SKILL.md'
 }
 
-if ($prompt -match '(?i)ui|screen|component|button|modal|form|css|layout|responsive|accessibility|playwright|screenshot|화면|컴포넌트|버튼|반응형|접근성') {
+if ($prompt -match '(?i)ui|screen|component|button|modal|\bform\b|css|layout|responsive|accessibility|contrast|color contrast|playwright|screenshot|화면|컴포넌트|버튼|반응형|접근성|색상 대비|대비') {
     Add-Skill '.agents/skills/frontend-ui/SKILL.md'
 }
 
@@ -64,6 +64,14 @@ if ($prompt -match '(?i)review|검토|리뷰') {
 
 if ($prompt -match '(?i)performance|perf|slow|cache|bottleneck|bundle|성능|느림|캐시|병목|번들') {
     Add-Skill '.agents/skills/performance/SKILL.md'
+}
+
+if ($prompt -match '(?i)timeout|retry|backoff|idempotency|idempotent|rate limit|quota|circuit breaker|resilience|타임아웃|재시도|멱등|장애|복원력') {
+    Add-Skill '.agents/skills/resilience/SKILL.md'
+}
+
+if ($prompt -match '(?i)i18n|locale|timezone|time zone|currency|date format|number format|translation|다국어|로케일|시간대|날짜|통화|번역') {
+    Add-Skill '.agents/skills/i18n-time-currency/SKILL.md'
 }
 
 if ($prompt -match '(?i)dependency|package|install|lockfile|upgrade|npm|pnpm|yarn|pip|cargo|패키지|의존성|설치|업그레이드') {

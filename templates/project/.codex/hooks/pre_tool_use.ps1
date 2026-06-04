@@ -33,6 +33,14 @@ if ($raw -match '(?i)secret|token|password|auth|permission|보안|시크릿|인�
     Add-Skill '.agents/skills/security/SKILL.md'
 }
 
+if ($raw -match '(?i)timeout|retry|rate limit|quota|idempotency|타임아웃|재시도|멱등|장애') {
+    Add-Skill '.agents/skills/resilience/SKILL.md'
+}
+
+if ($raw -match '(?i)i18n|locale|timezone|currency|date format|다국어|로케일|시간대|통화') {
+    Add-Skill '.agents/skills/i18n-time-currency/SKILL.md'
+}
+
 $lines = @('[도구 사용 전 확인]')
 
 if ($skills.Count -gt 0) {

@@ -9,6 +9,12 @@ description: 코드 스타일, 네이밍, 주석, 추상화, convention, naming,
 
 새 코드가 기존 코드베이스 안에서 튀지 않게 하고, 단순한 변경을 단순하게 유지한다.
 
+## 함께 적용하는 스킬
+
+- 리팩터링이 포함되면 `../refactoring/SKILL.md`를 함께 적용한다.
+- UI 스타일 변경은 `../frontend-ui/SKILL.md`를 함께 적용한다.
+- 문서 문체나 예시 변경은 `../documentation/SKILL.md`를 함께 적용한다.
+
 ## 기본 원칙
 
 - 기존 파일의 구조, 네이밍, import 순서, 에러 처리 방식을 우선한다.

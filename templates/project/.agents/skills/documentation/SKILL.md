@@ -9,6 +9,12 @@ description: 문서, README, docs, changelog, 가이드, 사용법, 아키텍처
 
 문서가 코드와 같은 방향을 가리키게 만들고, 필요한 독자가 바로 다음 행동을 할 수 있게 한다.
 
+## 함께 적용하는 스킬
+
+- API 문서는 `../backend-api/SKILL.md`를 함께 적용한다.
+- 배포, migration, 환경 변수 문서는 `../release-deploy/SKILL.md`를 함께 적용한다.
+- i18n, 시간대, 통화 문서는 `../i18n-time-currency/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 기존 문서의 톤, 구조, 용어, 경로 표기 방식을 확인한다.

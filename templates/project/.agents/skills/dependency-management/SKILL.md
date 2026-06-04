@@ -9,6 +9,12 @@ description: dependency, package, install, lockfile, upgrade, npm, pnpm, yarn, p
 
 필요한 의존성만 추가하고, lockfile과 보안/호환성 영향을 함께 관리한다.
 
+## 함께 적용하는 스킬
+
+- 설치 후 검증은 `../testing-qa/SKILL.md`를 함께 적용한다.
+- 보안 취약점이나 secret 관련 패키지는 `../security/SKILL.md`를 함께 적용한다.
+- 빌드, 번들 크기 영향은 `../performance/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 기존 패키지 매니저와 lockfile을 확인한다.

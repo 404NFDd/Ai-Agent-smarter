@@ -9,6 +9,12 @@ description: refactor, cleanup, rework, 리팩터링, 정리, 구조 개선, 중
 
 외부 동작을 바꾸지 않고 코드의 이해 가능성, 중복, 변경 용이성을 개선한다.
 
+## 함께 적용하는 스킬
+
+- 리팩터링 전후 동작 보호는 `../testing-qa/SKILL.md`를 함께 적용한다.
+- API, UI, DB 경계 변경은 각각 `../backend-api/SKILL.md`, `../frontend-ui/SKILL.md`, `../database-migration/SKILL.md`를 함께 적용한다.
+- 큰 구조 변경 계획은 `../implementation-planning/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 리팩터링의 목표와 비목표를 명확히 한다.

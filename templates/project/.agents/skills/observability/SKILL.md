@@ -9,6 +9,12 @@ description: log, metric, trace, tracing, Sentry, monitoring, observability, 로
 
 운영 중 문제를 추적할 수 있게 로그, 메트릭, 트레이스를 적절한 위치에 남긴다.
 
+## 함께 적용하는 스킬
+
+- API 오류, rate limit, request id는 `../backend-api/SKILL.md`를 함께 적용한다.
+- 민감 정보 로그 노출은 `../security/SKILL.md`를 함께 적용한다.
+- timeout, retry, circuit breaker 관측은 `../resilience/SKILL.md`를 함께 적용한다.
+
 ## 작업 전 확인
 
 - 기존 logging, metrics, tracing, error reporting 도구와 필드 규칙을 확인한다.

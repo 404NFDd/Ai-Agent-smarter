@@ -9,6 +9,12 @@ description: 코드 리뷰, 검토, review, 변경사항 점검, 위험 분석, 
 
 칭찬이나 요약보다 버그, 회귀 위험, 보안 문제, 누락 테스트를 먼저 찾는다.
 
+## 함께 적용하는 스킬
+
+- 보안 위험 검토는 `../security/SKILL.md`를 함께 적용한다.
+- 테스트 공백 검토는 `../testing-qa/SKILL.md`를 함께 적용한다.
+- API, UI, DB 변경은 각각 `../backend-api/SKILL.md`, `../frontend-ui/SKILL.md`, `../database-migration/SKILL.md`를 함께 적용한다.
+
 ## 리뷰 순서
 
 - 변경 의도와 실제 diff가 맞는지 확인한다.

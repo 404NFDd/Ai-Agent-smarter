@@ -69,6 +69,8 @@ templates/project/.agents/skills/backend-api/SKILL.md
 templates/project/.agents/skills/database-migration/SKILL.md
 templates/project/.agents/skills/security/SKILL.md
 templates/project/.agents/skills/performance/SKILL.md
+templates/project/.agents/skills/resilience/SKILL.md
+templates/project/.agents/skills/i18n-time-currency/SKILL.md
 templates/project/.agents/skills/dependency-management/SKILL.md
 templates/project/.agents/skills/release-deploy/SKILL.md
 templates/project/.agents/skills/observability/SKILL.md
@@ -80,6 +82,7 @@ templates/project/.agents/skills/ai-agent-collaboration/SKILL.md
 
 - [ ] 실제 프로젝트에 필요한 skill만 남겼다.
 - [ ] 각 `SKILL.md` 내용을 프로젝트 특성에 맞게 채웠다.
+- [ ] 관련 skill은 `함께 적용하는 스킬` 섹션으로 서로 연결했다.
 - [ ] 완료 전 확인 항목이 검증 가능하다.
 
 ## 4. 프로젝트 hooks
