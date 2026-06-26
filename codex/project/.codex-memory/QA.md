@@ -72,6 +72,12 @@
 | hook routing example: `modal color contrast accessibility 확인` | 통과 | 2026-06-04 | frontend-ui skill 후보 출력 확인 |
 | hook skill references path validation | 통과 | 2026-06-04 | user_prompt_submit/pre_tool_use가 참조하는 20개 skill 경로 존재 확인 |
 | `.ps1` BOM byte check on project hooks | 통과 | 2026-06-04 | 프로젝트 hook 스크립트 5개 모두 UTF-8 BOM 유지 확인 |
+| `ConvertFrom-Json` on updated hook JSON files | 통과 | 2026-06-14 | 전역/프로젝트 hook JSON 형식 확인 |
+| PowerShell parser on updated hook scripts | 통과 | 2026-06-14 | 전역/프로젝트 hook 스크립트 구문 확인 |
+| custom agent required-key validation | 통과 | 2026-06-14 | 4개 agent에 name, description, developer_instructions 존재 및 기존 instructions 제거 확인 |
+| temporary Git repository hook rehearsal | 통과 | 2026-06-14 | UserPromptSubmit, PreToolUse, PostToolUse, Stop 이벤트별 JSON 출력 확인 |
+| subdirectory Git-root hook path rehearsal | 통과 | 2026-06-14 | 저장소 하위 디렉터리에서 Git 루트를 찾아 project hook 실행 확인 |
+| UTF-8/BOM structured hook rehearsal | 통과 | 2026-06-14 | UTF-8 stdin의 선행 BOM 제거, skill 라우팅, Stop block과 반복 방지 확인 |
 
 ## 실패한 검증
 
@@ -82,11 +88,15 @@
 | 최초 전역 `hooks.json` 검증 병렬 실행 | 샌드박스 준비 단계 오류 | 동일 검증을 단독 escalated 실행으로 재시도해 통과 |
 | skill 검증 병렬 실행 일부 | Windows sandbox setup refresh 오류 | 동일 frontmatter/경로 검증을 단독 escalated 실행으로 재시도해 통과 |
 | 이번 skill/hook 검증 병렬 실행 일부 | Windows sandbox setup refresh 오류 | 동일 상호 참조, PowerShell 파싱, hook 라우팅, BOM 검증을 단독 escalated 실행으로 재시도해 통과 |
+| 최신 규약 반영 초기 병렬 파일 읽기 및 검증 일부 | Windows sandbox setup refresh 오류 | 동일 읽기와 검증을 단독 또는 escalated 실행으로 재시도해 통과 |
+| `codex features list` | 전역 `service_tier = "default"`가 현재 CLI에서 유효하지 않아 실패 | 일회성 `service_tier="fast"` override로 feature 상태를 확인했으며 실제 전역 설정은 수정하지 않았다. |
+| 초기 구조화 hook 리허설 | Windows PowerShell 파이프 및 진단 프로세스가 stdin 앞에 BOM을 추가해 `ConvertFrom-Json` 실패 | hook에서 선행 BOM을 제거하도록 보강하고 UTF-8 구조화 리허설을 재실행해 통과 |
 
 ## 수동 확인 필요
 
 - 실제 전역 hook 동작은 Codex 재시작 또는 다음 새 요청에서 응답 첫 줄 표시 여부로 확인해야 한다.
 - 각 대상 프로젝트의 실제 테스트 명령은 프로젝트별로 채워야 한다.
+- 최신 Codex의 `/hooks` 신뢰 처리와 custom agent 발견 여부는 대상 프로젝트에 템플릿을 적용한 뒤 수동 확인해야 한다.
 
 ## 남은 위험
 
@@ -99,3 +109,5 @@
 - 이벤트별 hook 분리도 실제 전역 설정이 아니라 루트 `global` 템플릿에만 반영했다.
 - skill 본문은 범용 템플릿 기준이므로, 실제 대상 프로젝트 적용 시 프레임워크별 명령과 조직 규칙은 프로젝트별 `references/`나 문서로 보강해야 한다.
 - `resilience`, `i18n-time-currency`는 범용 템플릿 skill로 추가했지만, 실제 프로젝트 적용 시 사용하는 HTTP client, queue, DB, i18n 라이브러리별 세부 reference가 필요할 수 있다.
+- 현재 설치된 npm Codex CLI는 `0.122.0`이며 실제 전역 `config.toml`의 `service_tier = "default"` 때문에 기본 CLI 명령이 실패한다. 프로젝트 범위 밖 설정이므로 수정하지 않았다.
+- 프로젝트 hook 명령은 대상 프로젝트가 Git 저장소라는 가정에 의존한다.

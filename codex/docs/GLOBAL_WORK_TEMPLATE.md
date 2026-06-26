@@ -56,7 +56,7 @@ global/AGENTS.md
 
 목적:
 
-- hooks와 multi-agent 기능을 명시한다.
+- 기본 활성화된 hooks와 multi-agent 기능을 정책상 명시적으로 고정할지 결정한다.
 - 기존 plugin, MCP, desktop, project 설정을 건드리지 않는다.
 
 템플릿:
@@ -68,8 +68,7 @@ global/config.features.toml
 체크리스트:
 
 - [ ] `[features]` 섹션이 중복되지 않았다.
-- [ ] `hooks = true`가 있다.
-- [ ] `multi_agent = true`가 있다.
+- [ ] 기본 활성값을 그대로 사용할지, `hooks = true`와 `multi_agent = true`를 명시적으로 고정할지 결정했다.
 - [ ] 기존 설정이 삭제되지 않았다.
 
 ## 3. 전역 UserPromptSubmit hook 테스트
@@ -85,7 +84,6 @@ global/config.features.toml
 global/hooks.json
 global/hooks/global_user_prompt_submit.ps1
 global/hooks/global_post_tool_use.ps1
-global/hooks/global_stop_check.ps1
 ```
 
 체크리스트:
@@ -107,13 +105,13 @@ global/hooks/global_stop_check.ps1
 ```text
 global/hooks/global_session_start.ps1
 global/hooks/global_post_tool_use.ps1
-global/hooks/global_stop_check.ps1
 ```
 
 체크리스트:
 
 - [ ] `SessionStart` 설정이 `UserPromptSubmit` 설정을 덮어쓰지 않았다.
 - [ ] 새 세션에서 memory 확인 알림이 나온다.
+- [ ] `/hooks`에서 새 hook 정의를 검토하고 신뢰 처리했다.
 
 ## 5. 실패 시 fallback
 
@@ -131,5 +129,5 @@ hooks가 안정적으로 동작하지 않으면 다음 구조만 유지한다.
 fallback 기준:
 
 - [ ] hooks 실행 오류가 반복된다.
-- [ ] Stop hook이 과도하게 차단한다.
+- [ ] 프로젝트 Stop hook이 과도한 추가 작업을 반복 요청한다.
 - [ ] payload 구조를 안정적으로 파악하지 못했다.

@@ -3,8 +3,21 @@
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
 $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
-$raw = [Console]::In.ReadToEnd()
+$raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
+$toolName = ''
+$toolCommand = ''
 $skills = @()
+
+try {
+    $inputData = $raw | ConvertFrom-Json -ErrorAction Stop
+    $toolName = [string]$inputData.tool_name
+    $toolCommand = [string]$inputData.tool_input.command
+} catch {
+    $toolName = ''
+    $toolCommand = ''
+}
+
+$toolText = "$toolName $toolCommand"
 
 function Add-Skill {
     param([string]$Path)
@@ -13,31 +26,31 @@ function Add-Skill {
     }
 }
 
-if ($raw -match '(?i)\brm\b|remove-item|del\b|erase\b|삭제|제거') {
+if ($toolText -match '(?i)\brm\b|remove-item|del\b|erase\b|삭제|제거') {
     Add-Skill '.agents/skills/git-workflow/SKILL.md'
 }
 
-if ($raw -match '(?i)migration|migrate|schema|db|database|마이그레이션|스키마') {
+if ($toolText -match '(?i)migration|migrate|schema|db|database|마이그레이션|스키마') {
     Add-Skill '.agents/skills/database-migration/SKILL.md'
 }
 
-if ($raw -match '(?i)install|add package|npm|pnpm|yarn|pip|cargo|lockfile|패키지|의존성|설치') {
+if ($toolText -match '(?i)install|add package|npm|pnpm|yarn|pip|cargo|lockfile|패키지|의존성|설치') {
     Add-Skill '.agents/skills/dependency-management/SKILL.md'
 }
 
-if ($raw -match '(?i)deploy|release|publish|rollback|배포|릴리즈|롤백') {
+if ($toolText -match '(?i)deploy|release|publish|rollback|배포|릴리즈|롤백') {
     Add-Skill '.agents/skills/release-deploy/SKILL.md'
 }
 
-if ($raw -match '(?i)secret|token|password|auth|permission|보안|시크릿|인증|권한') {
+if ($toolText -match '(?i)secret|token|password|auth|permission|보안|시크릿|인증|권한') {
     Add-Skill '.agents/skills/security/SKILL.md'
 }
 
-if ($raw -match '(?i)timeout|retry|rate limit|quota|idempotency|타임아웃|재시도|멱등|장애') {
+if ($toolText -match '(?i)timeout|retry|rate limit|quota|idempotency|타임아웃|재시도|멱등|장애') {
     Add-Skill '.agents/skills/resilience/SKILL.md'
 }
 
-if ($raw -match '(?i)i18n|locale|timezone|currency|date format|다국어|로케일|시간대|통화') {
+if ($toolText -match '(?i)i18n|locale|timezone|currency|date format|다국어|로케일|시간대|통화') {
     Add-Skill '.agents/skills/i18n-time-currency/SKILL.md'
 }
 
@@ -53,8 +66,6 @@ if ($skills.Count -gt 0) {
 }
 
 $payload = @{
-    decision = 'allow'
-    reason = '도구 사용 전 확인 완료'
     hookSpecificOutput = @{
         hookEventName = 'PreToolUse'
         additionalContext = ($lines -join "`n")

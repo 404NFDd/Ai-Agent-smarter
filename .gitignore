@@ -1,0 +1,20 @@
+#git 
+.git/
+
+# AI 에이전트 도구 (최상위 런타임 디렉토리/파일)
+/.bkit/
+/.claude/
+CLAUDE.md
+
+# 에디터 / IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 로그 / 캐시
+*.log
+.cache/

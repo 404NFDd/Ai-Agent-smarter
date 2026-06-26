@@ -9,12 +9,21 @@ New-Item -ItemType Directory -Force -Path $memoryDir | Out-Null
 
 $modifiedPath = Join-Path $memoryDir 'MODIFIED_FILES.md'
 $qaPath = Join-Path $memoryDir 'QA.md'
-$raw = [Console]::In.ReadToEnd()
+$raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
+$toolName = ''
+$toolCommand = ''
+$toolResponse = ''
 $now = Get-Date -Format 'yyyy-MM-dd HH:mm'
-$summary = ($raw -replace '\r?\n', ' ').Trim()
 
-if ($summary.Length -gt 140) {
-    $summary = $summary.Substring(0, 140) + '...'
+try {
+    $inputData = $raw | ConvertFrom-Json -ErrorAction Stop
+    $toolName = [string]$inputData.tool_name
+    $toolCommand = [string]$inputData.tool_input.command
+    $toolResponse = $inputData.tool_response | ConvertTo-Json -Depth 5 -Compress
+} catch {
+    $toolName = ''
+    $toolCommand = ''
+    $toolResponse = ''
 }
 
 if (-not (Test-Path -LiteralPath $modifiedPath)) {
@@ -25,16 +34,16 @@ if (-not (Test-Path -LiteralPath $qaPath)) {
     Set-Content -LiteralPath $qaPath -Encoding UTF8 -Value "# QA`n`n## 실행한 검증`n`n| 명령 | 결과 | 일시 | 메모 |`n| --- | --- | --- | --- |"
 }
 
-if ($raw -match '(?i)apply_patch|write|edit|modify|create|수정|생성') {
-    Add-Content -LiteralPath $modifiedPath -Encoding UTF8 -Value "| $now | hook payload | 도구 사용 | $summary |"
+if ($toolName -eq 'apply_patch') {
+    Add-Content -LiteralPath $modifiedPath -Encoding UTF8 -Value "| $now | hook 감지 파일 수정 | 도구 사용 | apply_patch 실행 |"
 }
 
-if ($raw -match '(?i)test|lint|build|typecheck|pytest|npm test|verify|검증|테스트') {
+if ($toolName -eq 'Bash' -and $toolCommand -match '(?i)test|lint|build|typecheck|pytest|npm test|verify|검증|테스트') {
     $result = '기록'
-    if ($raw -match '(?i)fail|failed|error|exit code.*[1-9]|실패') {
+    if ($toolResponse -match '(?i)fail|failed|error|exit code.*[1-9]|실패') {
         $result = '확인 필요'
     }
-    Add-Content -LiteralPath $qaPath -Encoding UTF8 -Value "| $summary | $result | $now | PostToolUse 감지 |"
+    Add-Content -LiteralPath $qaPath -Encoding UTF8 -Value "| hook 감지 검증 명령 | $result | $now | Bash 검증 명령 실행 |"
 }
 
 $payload = @{

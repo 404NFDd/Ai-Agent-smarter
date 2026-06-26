@@ -88,3 +88,9 @@
 | 2026-06-04 | `templates/project/.codex/hooks/pre_tool_use.ps1` | 수정 | resilience, i18n-time-currency 위험 작업 전 skill 후보 추가 |
 | 2026-06-04 | `docs/PROJECT_WORK_TEMPLATE.md` | 수정 | 새 skill 2개와 skill 연계 체크리스트 반영 |
 | 2026-06-04 | `.codex-memory/*` | 수정 | 이번 피드백 반영의 결정, 체크리스트, 수정 파일, QA 기록 추가 |
+| 2026-06-14 | `templates/project/.codex/agents/*.toml` | 수정 | 최신 custom agent 필수 키 `developer_instructions` 반영 |
+| 2026-06-14 | `templates/project/.codex/hooks.json` | 수정 | PermissionRequest 제거 및 Git 루트 기준 hook 명령 반영 |
+| 2026-06-14 | `templates/project/.codex/hooks/*.ps1` | 수정 | 구조화된 입력 처리와 이벤트별 공식 출력 형식 반영 |
+| 2026-06-14 | `global/hooks.json`, `global/hooks/global_stop_check.ps1` | 수정/삭제 | 지원되지 않는 전역 Stop hook 제거 |
+| 2026-06-14 | `global/config.features.toml`, `docs/*.md` | 수정 | 기본 활성 feature, hook trust, 경로 및 Stop 의미 안내 반영 |
+| 2026-06-14 | `.codex-memory/*` | 수정 | 변경 이유, 완료 항목, 수정 파일과 QA 결과 기록 |

@@ -43,3 +43,24 @@
 ## 승인 상태
 
 사용자가 템플릿 작성 요청을 했으므로 구현을 진행한다.
+
+## 2026-06-14 최신 Codex 규약 반영
+
+### 목표
+
+최신 Codex에서 custom agent와 hook 템플릿이 공식 스키마와 이벤트 의미에 맞게 동작하도록 갱신한다.
+
+### 진행 단계
+
+1. custom agent 필수 키와 hook 등록 구조 수정
+2. hook 입력 파싱, 출력 스키마, 실행 경로 수정
+3. 적용 문서와 작업 memory 갱신
+4. 이벤트별 출력과 하위 디렉터리 실행 경로 검증
+
+### 검증 기준
+
+- 모든 custom agent에 `developer_instructions`가 있다.
+- 프로젝트 hook JSON과 PowerShell 스크립트가 유효하다.
+- 이벤트별 hook 출력이 최신 형식과 일치한다.
+- Git 저장소 하위 디렉터리에서도 project hook을 실행할 수 있다.
+- 실제 전역 설정과 Codex 설치는 수정하지 않는다.

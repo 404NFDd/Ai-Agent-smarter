@@ -3,9 +3,16 @@
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
 $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
-$raw = [Console]::In.ReadToEnd()
-$prompt = $raw
+$raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
+$prompt = ''
 $skills = @()
+
+try {
+    $inputData = $raw | ConvertFrom-Json -ErrorAction Stop
+    $prompt = [string]$inputData.prompt
+} catch {
+    $prompt = ''
+}
 
 function Add-Skill {
     param([string]$Path)

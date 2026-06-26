@@ -112,9 +112,11 @@ templates/project/.codex/hooks/stop_guard.ps1
 - [ ] 모든 `.ps1` 파일이 UTF-8 with BOM이다.
 - [ ] `UserPromptSubmit`이 요청 유형에 맞는 skill을 제안한다.
 - [ ] `SessionStart`가 `.codex-memory` 확인을 상기한다.
-- [ ] `PreToolUse`와 `PermissionRequest`가 위험 작업 전 관련 skill을 제안한다.
+- [ ] `PreToolUse`가 위험 작업 전 관련 skill을 제안하되 승인 결정을 대신하지 않는다.
 - [ ] `PostToolUse`가 수정 또는 검증 흔적을 기록한다.
-- [ ] `Stop`이 QA 누락을 차단한다.
+- [ ] `Stop`이 QA 누락 시 추가 작업을 요청하고 반복 실행을 피한다.
+- [ ] 프로젝트를 trusted project로 등록하고 `/hooks`에서 hook 정의를 신뢰 처리했다.
+- [ ] 저장소 하위 디렉터리에서도 Git 루트 기준 hook 경로가 동작한다.
 
 ## 5. Subagents
 

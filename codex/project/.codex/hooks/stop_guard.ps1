@@ -9,6 +9,15 @@ $qaPath = Join-Path $projectRoot '.codex-memory/QA.md'
 $modifiedPath = Join-Path $projectRoot '.codex-memory/MODIFIED_FILES.md'
 
 $reasons = @()
+$stopHookActive = $false
+
+try {
+    $raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
+    $inputData = $raw | ConvertFrom-Json -ErrorAction Stop
+    $stopHookActive = [bool]$inputData.stop_hook_active
+} catch {
+    $stopHookActive = $false
+}
 
 $modifiedRows = @()
 if (Test-Path -LiteralPath $modifiedPath) {
@@ -31,15 +40,14 @@ if (Test-Path -LiteralPath $checklistPath) {
     }
 }
 
-if ($reasons.Count -gt 0) {
+if ($reasons.Count -gt 0 -and -not $stopHookActive) {
     $payload = @{
         decision = 'block'
         reason = ($reasons -join ' ')
     }
 } else {
     $payload = @{
-        decision = 'allow'
-        reason = '완료 조건 충족'
+        continue = $true
     }
 }
 

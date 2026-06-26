@@ -43,3 +43,11 @@
 - [x] 프로젝트 skill 18개 `SKILL.md`에 실행 매뉴얼 본문 추가
 - [x] skill 피드백 반영: RFC 9457, WCAG/APG, OWASP API4, 테스트 fixture, skill 연계 보강
 - [x] `resilience`, `i18n-time-currency` skill 신설과 hook 라우팅 추가
+- [x] custom agent 필수 키를 `developer_instructions`로 변경
+- [x] 프로젝트 `PermissionRequest` hook 제거 및 `PreToolUse` 안내 전용화
+- [x] 프로젝트 Stop hook을 최신 continuation 출력 형식으로 변경
+- [x] 지원되지 않는 전역 Stop hook 제거
+- [x] 프로젝트 hook 명령을 Git 루트 기준 경로로 변경
+- [x] 프로젝트 hook 입력을 구조화된 JSON 필드 기준으로 변경
+- [x] 최신 hook trust와 기본 활성 feature 안내 문서 반영
+- [x] agent, hook JSON, PowerShell, 이벤트별 출력, 하위 경로 검증

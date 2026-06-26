@@ -89,7 +89,8 @@ global/config.features.toml
 - [ ] 기존 `config.toml`의 `[features]` 섹션을 찾는다.
 - [ ] `[features]` 섹션이 없으면 새로 추가한다.
 - [ ] 기존 feature 값을 삭제하지 않는다.
-- [ ] 아래 항목을 추가한다.
+- [ ] 최신 Codex에서 두 기능이 기본 활성화됨을 확인한다.
+- [ ] 조직 또는 개인 정책으로 활성 상태를 고정할 때만 아래 항목을 추가한다.
 
 ```toml
 [features]
@@ -111,7 +112,6 @@ global/hooks.json
 global/hooks/global_user_prompt_submit.ps1
 global/hooks/global_session_start.ps1
 global/hooks/global_post_tool_use.ps1
-global/hooks/global_stop_check.ps1
 ```
 
 작업:
@@ -120,7 +120,6 @@ global/hooks/global_stop_check.ps1
 - [ ] `global_user_prompt_submit.ps1`을 hooks 폴더에 복사한다.
 - [ ] `global_session_start.ps1`을 hooks 폴더에 복사한다.
 - [ ] `global_post_tool_use.ps1`을 hooks 폴더에 복사한다.
-- [ ] `global_stop_check.ps1`을 hooks 폴더에 복사한다.
 - [ ] `hooks.json`을 전역 폴더에 병합하거나 복사한다.
 - [ ] hook 명령이 `powershell.exe`를 사용하는지 확인한다.
 - [ ] `.ps1` 파일이 UTF-8 with BOM인지 확인한다.
@@ -132,12 +131,12 @@ Get-Content "C:\Users\msk23\.codex\hooks.json" -Encoding UTF8 -Raw | ConvertFrom
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_user_prompt_submit.ps1"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_session_start.ps1"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_post_tool_use.ps1"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_stop_check.ps1"
 ```
 
 ## 6. Codex 재시작 후 확인
 
 - [ ] Codex를 재시작한다.
+- [ ] `/hooks`에서 새 hook 정의를 검토하고 신뢰 처리한다.
 - [ ] 새 대화에서 짧은 요청을 보낸다.
 - [ ] 전역 `AGENTS.md` 규칙이 반영되는지 확인한다.
 - [ ] `UserPromptSubmit` hook의 추가 컨텍스트가 들어오는지 확인한다.
