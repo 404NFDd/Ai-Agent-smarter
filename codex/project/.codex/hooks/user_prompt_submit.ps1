@@ -3,6 +3,12 @@
 [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
 $OutputEncoding = [System.Text.UTF8Encoding]::new()
 
+$projectRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
+$skillsDir = Join-Path $projectRoot '.agents/skills'
+$memoryDir = Join-Path $projectRoot '.codex-memory'
+$planRequiredPath = Join-Path $memoryDir '.plan_required'
+$metricsPath = Join-Path $memoryDir 'METRICS.md'
+
 $raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
 $prompt = ''
 $skills = @()
@@ -12,6 +18,16 @@ try {
     $prompt = [string]$inputData.prompt
 } catch {
     $prompt = ''
+}
+
+# 스킬 본문을 안전하게 읽어 주입(강제 읽기). 길이 상한으로 자원 낭비 방지.
+function Get-SkillContent {
+    param([string]$SkillName, [int]$Budget)
+    $skillFile = Join-Path $skillsDir "$SkillName/SKILL.md"
+    if (-not (Test-Path -LiteralPath $skillFile)) { return '' }
+    $content = Get-Content -LiteralPath $skillFile -Raw -Encoding UTF8
+    if ($content.Length -gt $Budget) { $content = $content.Substring(0, $Budget) + "...(이후 생략, chapters/ 참조)" }
+    return $content
 }
 
 function Add-Skill {
@@ -101,24 +117,58 @@ if ($prompt -match '(?i)codex|agent|collaboration|handoff|질문|중간 보고|�
     Add-Skill '.agents/skills/ai-agent-collaboration/SKILL.md'
 }
 
+# 의도 분류(갭 4): action-verb 기반 작업 유형 보강. 큰 작업은 planner 게이트로 연결.
 $isLargeTask = $prompt -match '(?i)build|add|implement|refactor|structure|migration|rework|만들어줘|추가해줘|구현해줘|리팩터링|구조|마이그레이션|정리해줘'
+$isBugfix = $prompt -match '(?i)fix|고쳐|버그|오류|에러|재현|debug'
+
+# 큰 작업 감지 → plan_required 상태 기록(C 항목 5/6). PLAN.md 가 이후에 갱신되어야 게이트 해제.
+if ($isLargeTask) {
+    $utf8 = [System.Text.UTF8Encoding]::new($false)
+    [System.IO.File]::WriteAllText($planRequiredPath, (Get-Date -Format 'yyyy-MM-dd HH:mm'), $utf8)
+}
 
 $lines = @('[Codex 운영 컨텍스트]')
 
-if ($skills.Count -gt 0) {
-    $lines += '이 요청과 관련 있어 보이는 skill 후보:'
-    foreach ($skill in $skills) {
-        $lines += "- $skill"
+# 강제 읽기(B 항목 1): 매칭 skill 경로만 추천하지 않고 본문을 주입.
+$injectedAny = $false
+$budget = 4000
+$usedBudget = 0
+foreach ($skillPath in $skills) {
+    $skillName = ($skillPath -split '/')[-2]
+    $remaining = $budget - $usedBudget
+    if ($remaining -le 200) { break }
+    $content = Get-SkillContent -SkillName $skillName -Budget $remaining
+    if ($content) {
+        $lines += ''
+        $lines += "[skill 매뉴얼: $skillName]"
+        $lines += $content
+        $usedBudget += $content.Length
+        $injectedAny = $true
     }
-} else {
-    $lines += '관련 skill이 있으면 작업 전에 확인하세요.'
+}
+if (-not $injectedAny) {
+    $lines += '관련 skill이 있으면 작업 전에 .agents/skills/INDEX.md 를 확인하세요.'
 }
 
+# 큰 작업 지시: planner + 계획 문서 우선.
 if ($isLargeTask) {
-    $lines += '큰 작업으로 보이면 편집 전 .codex-memory/PLAN.md, CONTEXT.md, CHECKLIST.md를 먼저 갱신하세요.'
+    $lines += ''
+    $lines += '[큰 작업 게이트] 구현(apply_patch) 전에 먼저 planner 서브에이전트로 계획을 세우고 .codex-memory/PLAN.md, CONTEXT.md, CHECKLIST.md 를 작성/갱신하세요. PLAN.md 를 저장하기 전에는 편집이 차단됩니다.'
+    $planPath = Join-Path $memoryDir 'PLAN.md'
+    if (-not (Test-Path -LiteralPath $planPath)) {
+        $lines += 'PLAN.md 가 없습니다. 큰 작업 시작 전 PLAN/CONTEXT/CHECKLIST 뼈대를 먼저 만드세요.'
+    }
 }
 
-$lines += '완료 전 QA.md에 검증 결과와 남은 위험을 기록하세요.'
+if ($isBugfix) {
+    $lines += '버그 수정은 재현 → 검증 흐름으로 진행하세요(bugfix-debugging skill 참조).'
+}
+
+$lines += '완료 전 QA.md 에 검증 결과와 남은 위험을 기록하세요.'
+
+if (Test-Path -LiteralPath $metricsPath) {
+    Add-Content -LiteralPath $metricsPath -Encoding UTF8 -Value "| $(Get-Date -Format 'yyyy-MM-dd HH:mm') | user_prompt skills=$($skills.Count) large=$isLargeTask |"
+}
 
 $payload = @{
     hookSpecificOutput = @{
@@ -128,4 +178,3 @@ $payload = @{
 }
 
 Write-Output ($payload | ConvertTo-Json -Depth 5 -Compress)
-

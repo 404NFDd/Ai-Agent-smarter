@@ -1,8 +1,8 @@
-# 프로젝트 작업 템플릿
+﻿# 프로젝트 작업 템플릿
 
 이 문서는 각 프로젝트 루트에 적용할 Codex 운영 시스템 템플릿이다.
 
-대상 프로젝트에 `templates/project` 내용을 복사한 뒤, 프로젝트 특성에 맞게 검증 명령과 skill 내용을 줄여서 조정한다.
+대상 프로젝트에 `codex/project` 내용을 복사한 뒤, 프로젝트 특성에 맞게 검증 명령과 skill 내용을 줄여서 조정한다.
 
 ## 1. 프로젝트 AGENTS.md
 
@@ -14,7 +14,7 @@
 템플릿:
 
 ```text
-templates/project/AGENTS.md
+codex/project/AGENTS.md
 ```
 
 체크리스트:
@@ -32,12 +32,12 @@ templates/project/AGENTS.md
 템플릿:
 
 ```text
-templates/project/.codex-memory/PLAN.md
-templates/project/.codex-memory/CONTEXT.md
-templates/project/.codex-memory/CHECKLIST.md
-templates/project/.codex-memory/QA.md
-templates/project/.codex-memory/DECISIONS.md
-templates/project/.codex-memory/MODIFIED_FILES.md
+codex/project/.codex-memory/PLAN.md
+codex/project/.codex-memory/CONTEXT.md
+codex/project/.codex-memory/CHECKLIST.md
+codex/project/.codex-memory/QA.md
+codex/project/.codex-memory/DECISIONS.md
+codex/project/.codex-memory/MODIFIED_FILES.md
 ```
 
 체크리스트:
@@ -56,26 +56,26 @@ templates/project/.codex-memory/MODIFIED_FILES.md
 템플릿:
 
 ```text
-templates/project/.agents/skills/codebase-onboarding/SKILL.md
-templates/project/.agents/skills/implementation-planning/SKILL.md
-templates/project/.agents/skills/bugfix-debugging/SKILL.md
-templates/project/.agents/skills/testing-qa/SKILL.md
-templates/project/.agents/skills/code-style/SKILL.md
-templates/project/.agents/skills/git-workflow/SKILL.md
-templates/project/.agents/skills/documentation/SKILL.md
-templates/project/.agents/skills/review/SKILL.md
-templates/project/.agents/skills/frontend-ui/SKILL.md
-templates/project/.agents/skills/backend-api/SKILL.md
-templates/project/.agents/skills/database-migration/SKILL.md
-templates/project/.agents/skills/security/SKILL.md
-templates/project/.agents/skills/performance/SKILL.md
-templates/project/.agents/skills/resilience/SKILL.md
-templates/project/.agents/skills/i18n-time-currency/SKILL.md
-templates/project/.agents/skills/dependency-management/SKILL.md
-templates/project/.agents/skills/release-deploy/SKILL.md
-templates/project/.agents/skills/observability/SKILL.md
-templates/project/.agents/skills/refactoring/SKILL.md
-templates/project/.agents/skills/ai-agent-collaboration/SKILL.md
+codex/project/.agents/skills/codebase-onboarding/SKILL.md
+codex/project/.agents/skills/implementation-planning/SKILL.md
+codex/project/.agents/skills/bugfix-debugging/SKILL.md
+codex/project/.agents/skills/testing-qa/SKILL.md
+codex/project/.agents/skills/code-style/SKILL.md
+codex/project/.agents/skills/git-workflow/SKILL.md
+codex/project/.agents/skills/documentation/SKILL.md
+codex/project/.agents/skills/review/SKILL.md
+codex/project/.agents/skills/frontend-ui/SKILL.md
+codex/project/.agents/skills/backend-api/SKILL.md
+codex/project/.agents/skills/database-migration/SKILL.md
+codex/project/.agents/skills/security/SKILL.md
+codex/project/.agents/skills/performance/SKILL.md
+codex/project/.agents/skills/resilience/SKILL.md
+codex/project/.agents/skills/i18n-time-currency/SKILL.md
+codex/project/.agents/skills/dependency-management/SKILL.md
+codex/project/.agents/skills/release-deploy/SKILL.md
+codex/project/.agents/skills/observability/SKILL.md
+codex/project/.agents/skills/refactoring/SKILL.md
+codex/project/.agents/skills/ai-agent-collaboration/SKILL.md
 ```
 
 체크리스트:
@@ -98,12 +98,12 @@ templates/project/.agents/skills/ai-agent-collaboration/SKILL.md
 템플릿:
 
 ```text
-templates/project/.codex/hooks.json
-templates/project/.codex/hooks/user_prompt_submit.ps1
-templates/project/.codex/hooks/session_start.ps1
-templates/project/.codex/hooks/pre_tool_use.ps1
-templates/project/.codex/hooks/post_tool_use.ps1
-templates/project/.codex/hooks/stop_guard.ps1
+codex/project/.codex/hooks.json
+codex/project/.codex/hooks/user_prompt_submit.ps1
+codex/project/.codex/hooks/session_start.ps1
+codex/project/.codex/hooks/pre_tool_use.ps1
+codex/project/.codex/hooks/post_tool_use.ps1
+codex/project/.codex/hooks/stop_guard.ps1
 ```
 
 체크리스트:
@@ -127,10 +127,10 @@ templates/project/.codex/hooks/stop_guard.ps1
 템플릿:
 
 ```text
-templates/project/.codex/agents/planner.toml
-templates/project/.codex/agents/reviewer.toml
-templates/project/.codex/agents/tester.toml
-templates/project/.codex/agents/security-reviewer.toml
+codex/project/.codex/agents/planner.toml
+codex/project/.codex/agents/reviewer.toml
+codex/project/.codex/agents/tester.toml
+codex/project/.codex/agents/security-reviewer.toml
 ```
 
 체크리스트:

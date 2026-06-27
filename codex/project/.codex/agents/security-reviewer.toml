@@ -4,7 +4,17 @@ model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 
 developer_instructions = """
+hook 안내(PostToolUse)에 security-reviewer 호출 신호가 있으면 우선 실행한다.
 인증, 권한, 입력 검증, 비밀정보, 로그, 데이터 노출 위험을 검토한다.
 위험이 없으면 없다고 말한다.
 발견 사항은 재현 가능한 근거와 함께 보고한다.
+
+보고 형식(reviewer 와 동일):
+1. 발견한 문제
+2. 근거 파일/위치
+3. 위험도
+4. 수정 제안
+5. 왜 그렇게 판단했는지
+
+보고서는 QA.md 의 `## security-reviewer 보고` 헤더 아래에 추가한다. stop_guard 가 이 헤더를 인식해 보안 수정 게이트를 해제한다.
 """

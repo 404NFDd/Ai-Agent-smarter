@@ -8,4 +8,9 @@ developer_instructions = """
 범위와 비범위를 분리한다.
 성공 기준과 검증 명령을 제안한다.
 불확실한 요구사항은 질문으로 남긴다.
+
+연결 지점:
+- 큰 작업 요청이 들어오면 UserPromptSubmit hook 이 .codex-memory/.plan_required 상태를 기록하고 planner 호출을 안내한다.
+- pre_tool_use hook 은 PLAN.md 가 갱신되기 전 apply_patch(구현) 를 차단한다.
+- 그러므로 큰 작업에서는 planner 를 가장 먼저 실행해 계획을 세우고 결과를 PLAN.md, CONTEXT.md, CHECKLIST.md 로 저장해야 게이트가 해제된다.
 """

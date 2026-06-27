@@ -1,4 +1,4 @@
-# 전역 작업 템플릿
+﻿# 전역 작업 템플릿
 
 이 문서는 `C:\Users\<사용자>\.codex` 전역 설정에 적용할 작업 순서 템플릿이다.
 
@@ -43,7 +43,7 @@ Test-Path -LiteralPath "C:\Users\<사용자>\.codex\hooks"
 템플릿:
 
 ```text
-global/AGENTS.md
+codex/global/AGENTS.md
 ```
 
 체크리스트:
@@ -62,7 +62,7 @@ global/AGENTS.md
 템플릿:
 
 ```text
-global/config.features.toml
+codex/global/config.features.toml
 ```
 
 체크리스트:
@@ -81,9 +81,9 @@ global/config.features.toml
 템플릿:
 
 ```text
-global/hooks.json
-global/hooks/global_user_prompt_submit.ps1
-global/hooks/global_post_tool_use.ps1
+codex/global/hooks.json
+codex/global/hooks/global_user_prompt_submit.ps1
+codex/global/hooks/global_post_tool_use.ps1
 ```
 
 체크리스트:
@@ -103,8 +103,8 @@ global/hooks/global_post_tool_use.ps1
 템플릿:
 
 ```text
-global/hooks/global_session_start.ps1
-global/hooks/global_post_tool_use.ps1
+codex/global/hooks/global_session_start.ps1
+codex/global/hooks/global_post_tool_use.ps1
 ```
 
 체크리스트:

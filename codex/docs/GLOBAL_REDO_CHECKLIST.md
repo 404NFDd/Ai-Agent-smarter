@@ -1,6 +1,6 @@
-# 전역 작업 재설정 체크리스트
+﻿# 전역 작업 재설정 체크리스트
 
-이 체크리스트는 `C:\Users\msk23\.codex` 전역 설정을 다시 구성할 때 사용한다.
+이 체크리스트는 `C:\Users\<사용자>\.codex` 전역 설정을 다시 구성할 때 사용한다.
 실제 전역 파일은 이 프로젝트에서 자동으로 수정하지 않는다.
 
 ## 0. 작업 원칙
@@ -16,24 +16,24 @@
 대상 폴더:
 
 ```text
-C:\Users\msk23\.codex
+C:\Users\<사용자>\.codex
 ```
 
 확인할 파일과 폴더:
 
-- [ ] `C:\Users\msk23\.codex\AGENTS.md` 존재 여부 확인
-- [ ] `C:\Users\msk23\.codex\config.toml` 존재 여부 확인
-- [ ] `C:\Users\msk23\.codex\hooks.json` 존재 여부 확인
-- [ ] `C:\Users\msk23\.codex\hooks\` 존재 여부 확인
+- [ ] `C:\Users\<사용자>\.codex\AGENTS.md` 존재 여부 확인
+- [ ] `C:\Users\<사용자>\.codex\config.toml` 존재 여부 확인
+- [ ] `C:\Users\<사용자>\.codex\hooks.json` 존재 여부 확인
+- [ ] `C:\Users\<사용자>\.codex\hooks\` 존재 여부 확인
 
 확인 명령:
 
 ```powershell
-Get-ChildItem -Force -LiteralPath "C:\Users\msk23\.codex"
-Test-Path -LiteralPath "C:\Users\msk23\.codex\AGENTS.md"
-Test-Path -LiteralPath "C:\Users\msk23\.codex\config.toml"
-Test-Path -LiteralPath "C:\Users\msk23\.codex\hooks.json"
-Test-Path -LiteralPath "C:\Users\msk23\.codex\hooks"
+Get-ChildItem -Force -LiteralPath "C:\Users\<사용자>\.codex"
+Test-Path -LiteralPath "C:\Users\<사용자>\.codex\AGENTS.md"
+Test-Path -LiteralPath "C:\Users\<사용자>\.codex\config.toml"
+Test-Path -LiteralPath "C:\Users\<사용자>\.codex\hooks.json"
+Test-Path -LiteralPath "C:\Users\<사용자>\.codex\hooks"
 ```
 
 ## 2. 백업 만들기
@@ -47,12 +47,12 @@ Test-Path -LiteralPath "C:\Users\msk23\.codex\hooks"
 예시:
 
 ```powershell
-$backup = "C:\Users\msk23\.codex\backup-global-redo-$(Get-Date -Format yyyyMMdd-HHmmss)"
+$backup = "C:\Users\<사용자>\.codex\backup-global-redo-$(Get-Date -Format yyyyMMdd-HHmmss)"
 New-Item -ItemType Directory -Force -Path $backup
-Copy-Item "C:\Users\msk23\.codex\AGENTS.md" $backup -ErrorAction SilentlyContinue
-Copy-Item "C:\Users\msk23\.codex\config.toml" $backup -ErrorAction SilentlyContinue
-Copy-Item "C:\Users\msk23\.codex\hooks.json" $backup -ErrorAction SilentlyContinue
-Copy-Item "C:\Users\msk23\.codex\hooks" $backup -Recurse -ErrorAction SilentlyContinue
+Copy-Item "C:\Users\<사용자>\.codex\AGENTS.md" $backup -ErrorAction SilentlyContinue
+Copy-Item "C:\Users\<사용자>\.codex\config.toml" $backup -ErrorAction SilentlyContinue
+Copy-Item "C:\Users\<사용자>\.codex\hooks.json" $backup -ErrorAction SilentlyContinue
+Copy-Item "C:\Users\<사용자>\.codex\hooks" $backup -Recurse -ErrorAction SilentlyContinue
 ```
 
 ## 3. 전역 AGENTS.md 병합
@@ -60,7 +60,7 @@ Copy-Item "C:\Users\msk23\.codex\hooks" $backup -Recurse -ErrorAction SilentlyCo
 템플릿:
 
 ```text
-global/AGENTS.md
+codex/global/AGENTS.md
 ```
 
 작업:
@@ -81,7 +81,7 @@ global/AGENTS.md
 템플릿:
 
 ```text
-global/config.features.toml
+codex/global/config.features.toml
 ```
 
 작업:
@@ -108,15 +108,15 @@ multi_agent = true
 템플릿:
 
 ```text
-global/hooks.json
-global/hooks/global_user_prompt_submit.ps1
-global/hooks/global_session_start.ps1
-global/hooks/global_post_tool_use.ps1
+codex/global/hooks.json
+codex/global/hooks/global_user_prompt_submit.ps1
+codex/global/hooks/global_session_start.ps1
+codex/global/hooks/global_post_tool_use.ps1
 ```
 
 작업:
 
-- [ ] `C:\Users\msk23\.codex\hooks\` 폴더를 만든다.
+- [ ] `C:\Users\<사용자>\.codex\hooks\` 폴더를 만든다.
 - [ ] `global_user_prompt_submit.ps1`을 hooks 폴더에 복사한다.
 - [ ] `global_session_start.ps1`을 hooks 폴더에 복사한다.
 - [ ] `global_post_tool_use.ps1`을 hooks 폴더에 복사한다.
@@ -127,10 +127,10 @@ global/hooks/global_post_tool_use.ps1
 검증:
 
 ```powershell
-Get-Content "C:\Users\msk23\.codex\hooks.json" -Encoding UTF8 -Raw | ConvertFrom-Json
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_user_prompt_submit.ps1"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_session_start.ps1"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\msk23\.codex\hooks\global_post_tool_use.ps1"
+Get-Content "C:\Users\<사용자>\.codex\hooks.json" -Encoding UTF8 -Raw | ConvertFrom-Json
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\<사용자>\.codex\hooks\global_user_prompt_submit.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\<사용자>\.codex\hooks\global_session_start.ps1"
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Users\<사용자>\.codex\hooks\global_post_tool_use.ps1"
 ```
 
 ## 6. Codex 재시작 후 확인

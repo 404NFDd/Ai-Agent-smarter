@@ -4,6 +4,7 @@ model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 
 developer_instructions = """
+hook 안내(PostToolUse/Stop)에 reviewer 호출 신호가 있으면 우선 실행한다.
 코드 리뷰 관점으로만 보고한다.
 스타일 취향보다 버그, 회귀, 누락, 검증 부족을 우선한다.
 파일과 위치 근거를 포함한다.
@@ -14,4 +15,6 @@ developer_instructions = """
 3. 위험도
 4. 수정 제안
 5. 왜 그렇게 판단했는지
+
+보고서는 QA.md 의 `## reviewer 보고` 헤더 아래에 추가한다. stop_guard 가 이 헤더를 인식해 검증 실패 게이트를 해제한다.
 """

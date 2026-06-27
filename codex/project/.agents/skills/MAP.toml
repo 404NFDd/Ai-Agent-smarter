@@ -1,0 +1,115 @@
+# Skill 라우팅 매핑(MAP)
+# hook 이 매칭 조건(키워드/의도/작업위치/파일내용) 으로 skill 을 고를 때 쓴다.
+# user_prompt_submit 은 프롬프트 텍스트(키워드/의도) 를, pre_tool_use 는 apply_patch 대상 경로와
+# 파일 내용(작업위치/파일내용) 을 본다. 매칭된 skill 의 SKILL.md 본문을 context 에 주입한다.
+#
+# 형식:
+#   [[keyword]]   : 프롬프트/명령 텍스트 정규식 -> skill
+#   [[intent]]    : action-verb 의도 분류 -> skill
+#   [[path]]       : 파일/폴더 경로 glob -> skill
+#   [[content]]    : 파일 내용 정규식 -> skill
+# glob 는 단일 세그먼트 * 와 ** (깊이) 를 지원한다. 정규식은 대소문자 무시(?i) 로 평가한다.
+
+# 키워드/의도 조건은 user_prompt_submit.ps1 의 기존 라우팅 표와 중복되지 않게 여기서는
+# 작업위치(path)와 파일내용(content) 조건만 둔다. 키워드/의도 라우팅은 user_prompt_submit.ps1 이 유지한다.
+
+[[path]]
+pattern = "**/api/**"
+skill = "backend-api"
+
+[[path]]
+pattern = "**/routes/**"
+skill = "backend-api"
+
+[[path]]
+pattern = "**/controllers/**"
+skill = "backend-api"
+
+[[path]]
+pattern = "**/services/**"
+skill = "backend-api"
+
+[[path]]
+pattern = "**/middleware/**"
+skill = "backend-api"
+
+[[path]]
+pattern = "**/components/**"
+skill = "frontend-ui"
+
+[[path]]
+pattern = "**/pages/**"
+skill = "frontend-ui"
+
+[[path]]
+pattern = "**/ui/**"
+skill = "frontend-ui"
+
+[[path]]
+pattern = "**/migrations/**"
+skill = "database-migration"
+
+[[path]]
+pattern = "**/schema/**"
+skill = "database-migration"
+
+[[path]]
+pattern = "**/*.sql"
+skill = "database-migration"
+
+[[path]]
+pattern = "**/auth/**"
+skill = "security"
+
+[[path]]
+pattern = "**/security/**"
+skill = "security"
+
+[[path]]
+pattern = "**/*.test.*"
+skill = "testing-qa"
+
+[[path]]
+pattern = "**/*.spec.*"
+skill = "testing-qa"
+
+[[path]]
+pattern = "**/__tests__/**"
+skill = "testing-qa"
+
+[[path]]
+pattern = "**/tests/**"
+skill = "testing-qa"
+
+[[path]]
+pattern = "**/*.md"
+skill = "documentation"
+
+[[path]]
+pattern = "**/.github/workflows/**"
+skill = "release-deploy"
+
+[[path]]
+pattern = "**/Dockerfile*"
+skill = "release-deploy"
+
+# 파일 내용 조건: 경로만으로 판단이 안 될 때 파일 본문 패턴으로 보강.
+[[content]]
+pattern = "(?i)router\\.(get|post|put|delete|patch)\\s*\\("
+skill = "backend-api"
+
+[[content]]
+pattern = "(?i)(jwt|bcrypt|argon2|passport|session\\s*secret)"
+skill = "security"
+
+[[content]]
+pattern = "(?i)(SELECT|INSERT|UPDATE|DELETE)\\s+.*\\s+FROM\\s+"
+skill = "database-migration"
+
+[[content]]
+pattern = "(?i)(useState|useEffect|<.*[A-Z].*\\s+.*>|@Component|@ViewChild)"
+skill = "frontend-ui"
+
+[[content]]
+pattern = "(?i)(describe|it|test)\\s*\\(\\s*['\"]"
+skill = "testing-qa"

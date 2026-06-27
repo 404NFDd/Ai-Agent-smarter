@@ -32,13 +32,10 @@
 
 ## 프로젝트별 검증 명령
 
-아래 예시는 실제 프로젝트 명령으로 바꾼다.
-
-```text
-[채우기] lint 명령
-[채우기] test 명령
-[채우기] build 명령
-```
+검증 명령은 `.codex/verify.toml`에 둔다. lint, test, typecheck, build 각 항목의
+`command`를 대상 프로젝트 실제 명령으로 채운다. 빈 문자열이거나 `enabled = false`인
+항목은 건너뛴다. stop_guard.ps1이 Stop 시점에 이 파일을 실행해 결과를
+`.codex-memory/QA.md`에 기록하고 실패 시 종료를 block 한다.
 
 ## 역할별 검토 기준
 
