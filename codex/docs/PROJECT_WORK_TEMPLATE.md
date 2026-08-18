@@ -65,6 +65,7 @@ codex/project/.agents/skills/git-workflow/SKILL.md
 codex/project/.agents/skills/documentation/SKILL.md
 codex/project/.agents/skills/review/SKILL.md
 codex/project/.agents/skills/frontend-ui/SKILL.md
+codex/project/.agents/skills/html-css-rules/SKILL.md
 codex/project/.agents/skills/backend-api/SKILL.md
 codex/project/.agents/skills/database-migration/SKILL.md
 codex/project/.agents/skills/security/SKILL.md

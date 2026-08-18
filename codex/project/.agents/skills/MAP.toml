@@ -46,6 +46,14 @@ pattern = "**/ui/**"
 skill = "frontend-ui"
 
 [[path]]
+pattern = "**/*.html"
+skill = "html-css-rules"
+
+[[path]]
+pattern = "**/*.css"
+skill = "html-css-rules"
+
+[[path]]
 pattern = "**/migrations/**"
 skill = "database-migration"
 

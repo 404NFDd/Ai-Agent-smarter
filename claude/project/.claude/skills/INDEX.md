@@ -1,7 +1,8 @@
 # Skill 목차(INDEX)
 
-이 파일은 전체 skill 의 목차다. hook(user_prompt_submit / pre_tool_use)가 요청이나 작업 위치/파일 내용 으로 매칭한 skill 을 판단할 때 기준으로 삼는다.
-각 skill 의 상세 본문은 `<skill>/SKILL.md`, 더 깊은 내용은 `<skill>/chapters/*.md` 에 있다. hook 은 매칭된 skill 의 SKILL.md 본문을 context 에 주입하고, 챕터는 필요 시 lazy 로드한다.
+이 파일은 전체 skill 의 목차다. 작업 영역을 고를 때 이 표만 보고 필요한 skill 한두 개를 정한 뒤, 그 skill 의 `SKILL.md` 본문만 읽는다. 전체 skill 을 통째로 읽지 않는다.
+
+Claude Code 는 각 `SKILL.md` 의 frontmatter `description` 을 보고 관련 skill 을 자동으로 불러온다. 이 표는 자동 매칭이 빗나갔을 때 사용자가 직접 지목하거나, Claude 가 인접 skill 을 함께 적용할지 판단할 때 쓰는 수동 라우팅 표다.
 
 ## 사용 조건 요약
 
@@ -27,7 +28,22 @@
 | refactoring | 리팩터링/정리/중복 제거 | refactor, cleanup, rework, 리팩터링, 정리, 구조 개선 |
 | documentation | 문서/README/가이드/갱신 | doc, docs, README, changelog, 가이드, 사용법 |
 | review | 코드 리뷰/검토/위험 분석 | review, 검토, 리뷰, 변경사항 점검, 누락 테스트 |
-| ai-agent-collaboration | 에이전트 협업/인계/중간 보고 | codex, agent, collaboration, handoff, 협업, 작업 인계, memory 운영 |
+| ai-agent-collaboration | 에이전트 협업/인계/중간 보고 | subagent, collaboration, handoff, 협업, 작업 인계, memory 운영 |
+
+## 작업 위치로 고르기
+
+자동 매칭이 애매할 때 수정 대상 경로로 판단한다.
+
+| 경로 패턴 | skill |
+| --- | --- |
+| `**/api/**`, `**/routes/**`, `**/controllers/**`, `**/services/**`, `**/middleware/**` | backend-api |
+| `**/components/**`, `**/pages/**`, `**/ui/**` | frontend-ui |
+| `**/*.html`, `**/*.css` | html-css-rules |
+| `**/migrations/**`, `**/schema/**`, `**/*.sql` | database-migration |
+| `**/auth/**`, `**/security/**` | security |
+| `**/*.test.*`, `**/*.spec.*`, `**/__tests__/**`, `**/tests/**` | testing-qa |
+| `**/.github/workflows/**`, `**/Dockerfile*` | release-deploy |
+| `**/*.md` | documentation |
 
 ## 함께 적용 관계(자주 같이 쓰이는 조합)
 
@@ -35,3 +51,7 @@
 - html-css-rules ↔ frontend-ui ↔ security(XSS) ↔ testing-qa(Playwright) ↔ i18n-time-currency
 - implementation-planning ↔ codebase-onboarding ↔ ai-agent-collaboration(계획 인계)
 - bugfix-debugging ↔ testing-qa(재현) ↔ observability(원인) ↔ review
+
+## 상세 챕터 분리 기준
+
+`SKILL.md` 한 파일이 300줄을 넘으면 `chapters/*.md` 로 쪼갠다. `SKILL.md` 에는 목차와 판단 기준만 두고, 긴 절차와 예시는 챕터로 내린다. Claude 는 필요한 챕터만 읽으므로 자원 소비가 줄어든다.

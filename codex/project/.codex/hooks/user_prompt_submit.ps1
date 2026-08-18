@@ -61,6 +61,10 @@ if ($prompt -match '(?i)ui|screen|component|button|modal|\bform\b|css|layout|res
     Add-Skill '.agents/skills/frontend-ui/SKILL.md'
 }
 
+if ($prompt -match '(?i)\bhtml\b|\bcss\b|markup|stylesheet|selector|마크업|스타일시트|선택자') {
+    Add-Skill '.agents/skills/html-css-rules/SKILL.md'
+}
+
 if ($prompt -match '(?i)db|database|migration|schema|table|index|query|transaction|마이그레이션|스키마|쿼리') {
     Add-Skill '.agents/skills/database-migration/SKILL.md'
 }
