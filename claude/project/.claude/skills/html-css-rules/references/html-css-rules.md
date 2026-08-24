@@ -1,7 +1,7 @@
 # HTML/CSS 작성 규격서
 
 이 문서는 **근거와 예외까지 담은 원본 규격서**다. 에이전트에게 매번 넣는 용도가 아니다.
-실행용 축약본은 `agent-rules.md`를 쓴다.
+실행용 축약본은 상위 폴더의 `SKILL.md`를 쓴다.
 
 ---
 
@@ -67,56 +67,11 @@ CSS가 난잡해지는 원인의 대부분은 이 경계가 무너진 결과다.
 
 주석은 해당 선언 또는 규칙 **바로 앞 줄**에 둔다. 검사기가 위치로 연결하기 때문이다.
 
-## 0.3 적용 범위
-
-페이지 전체 문서와 재사용 컴포넌트에 같은 규칙을 무조건 적용하면 에이전트가 컴포넌트 안에 `main`, 스킵 링크, `h1`을 만들 수 있다. 그래서 실행 시 적용 범위를 따로 구분한다.
-
-| 값 | 적용 대상 |
-|---|---|
-| `DOCUMENT` | 전체 HTML 문서 또는 페이지 셸 |
-| `COMPONENT` | 재사용 컴포넌트, partial, 조각 마크업 |
-| `ALL` | 둘 다 |
-
-문서 골격(`lang`, `charset`, `viewport`, 대표 `h1`, 스킵 링크, 단일 `main`)은 `DOCUMENT`에만 적용한다. 콘텐츠 의미, 폼 접근성, 이미지 대체 텍스트, `a`/`button` 구분 등은 `ALL`에 적용한다. 재사용 컴포넌트의 heading 레벨은 페이지 문맥에 따라 달라지므로 호출자가 결정할 수 있게 한다.
-
-## 0.4 프로젝트 프로파일
-
-`PROJECT` 규칙 중 선택지가 있는 항목은 에이전트가 작업마다 다시 고르지 않는다. 프로젝트 시작 시 사람이 한 번 확정한다.
-
-```text
-CSS_ISOLATION = <global-layer | css-modules | tailwind>
-UTILITY_STYLE = <allow | disallow>
-JS_HOOK = <class-prefix | ref | data-attribute | data-testid>
-H1_POLICY = <exactly-one | project-defined>
-COLOR_TOKEN = <two-tier | three-tier>
-VALIDATE_HTML = <project-defined command | none>
-VALIDATE_CSS = <project-defined command | none>
-```
-
-값이 비어 있으면 에이전트는 기존 코드, 설정 파일, package scripts에서 현재 방식을 확인한다. 확인 가능한 기존 방식이 있으면 그대로 따른다. 그래도 판정할 수 없으면 새 아키텍처를 임의로 도입하지 않고 기존 구조를 유지한다.
-
-## 0.5 기존 코드 수정 원칙
-
-새 코드를 처음부터 만드는 규칙과 기존 코드에 손대는 규칙은 다르다. 기존 코드 수정 시에는 아래 행동 규칙을 먼저 적용한다.
-
-```text
-[MUST] 새 패턴을 만들기 전에 인접한 기존 HTML/CSS와 프로젝트 설정을 확인한다.
-[MUST] 기존 네이밍, 토큰, 레이어/모듈, 컴포넌트 구조를 우선한다.
-[MUST] 요청받지 않은 리팩터링을 하지 않는다.
-[MUST] 작업에 필요하지 않은 클래스명, DOM 구조, 파일 구조를 바꾸지 않는다.
-[MUST] 기존 토큰/컴포넌트/유틸로 표현 가능하면 같은 역할의 새 항목을 만들지 않는다.
-[SHOULD] 변경 범위는 요청을 만족하는 최소 범위로 제한한다.
-```
-
-의미가 불명확해 수정하면 원래 의도가 바뀔 가능성이 있는 항목은 임의로 고치지 않는다. 가능한 작업은 완료하고, 남은 항목만 결과에 `확인 필요`로 기록한다.
-
 ---
 
 # 1부. HTML 규칙
 
 ## 1.1 문서 골격
-
-> 적용 범위: `DOCUMENT`. 재사용 컴포넌트에는 이 문서 골격 규칙을 직접 적용하지 않는다.
 
 ```html
 <!DOCTYPE html>
@@ -193,13 +148,11 @@ VALIDATE_CSS = <project-defined command | none>
 | 크기를 이유로 레벨을 고르지 않음 | MUST | PROJECT | 의미 |
 | heading이 뒤따르는 내용을 설명함 | MUST | WCAG | 의미 |
 | 레벨을 순방향으로 건너뛰지 않음 | MUST | PROJECT | 기계 |
-| 페이지 대표 제목은 `h1` 하나 (`H1_POLICY=exactly-one`) | MUST | PROJECT | 기계 |
+| 페이지 대표 제목은 `h1` 하나 | MUST | PROJECT | 기계 |
 
-레벨 건너뛰기와 `h1` 단일은 둘 다 `PROJECT`다. HTML 표준은 여러 최상위 heading을 허용하고, W3C 문서도 레벨 건너뛰기에 대해 "가능하면 피하라"에 가깝게 쓴다. 표준 위반은 아니지만 에이전트에게 선택지를 줄이면 구조가 일관되므로 프로젝트에서 강제한다. 단, `h1` 정책은 프로젝트 프로파일의 `H1_POLICY`를 따른다.
+레벨 건너뛰기와 `h1` 단일은 둘 다 `PROJECT`다. HTML 표준은 여러 최상위 heading을 허용하고, W3C 문서도 레벨 건너뛰기에 대해 "가능하면 피하라"에 가깝게 쓴다. 표준 위반은 아니지만 에이전트에게 선택지를 줄이면 구조가 일관되므로 프로젝트에서 강제한다.
 
-**재사용 컴포넌트의 레벨 처리 — COMPONENT**
-
-컴포넌트 내부에서 페이지 계층을 추측해 `h2`/`h3`를 고정하지 않는다. 호출자가 heading 레벨을 주입하거나 주변 문맥에서 결정할 수 있게 한다.
+**재사용 컴포넌트의 레벨 처리**
 
 ```jsx
 // 카드를 어디에 꽂느냐에 따라 h2가 맞을 수도 h3가 맞을 수도 있다.
@@ -337,11 +290,10 @@ function Card({ as: Heading = 'h3', title }) {
 <img src="deco.png" alt="">
 ```
 
-**아이콘 전용 버튼 프로젝트 표준**
-
-그림과 의미를 분리한다. 버튼에는 접근 가능한 이름이 있어야 하고, 아이콘은 보조기기에서 숨긴다. 프로젝트 기본 형태는 아래와 같다. 아이콘 구현이 `span` 대신 `svg`여도 의미 구조는 유지한다.
-
 ```html
+<!-- 아이콘 버튼: 그림과 의미를 분리한다.
+     span.icon  -> 그림만 담당. 보조기기에서는 숨긴다.
+     span.sr_only -> 의미만 담당. 화면에서는 숨긴다. -->
 <button type="button">
   <span class="icon_search" aria-hidden="true"></span>
   <span class="sr_only">검색</span>
@@ -391,7 +343,7 @@ function Card({ as: Heading = 'h3', title }) {
 
 ## 3.1 층
 
-CSS 격리 방식은 프로젝트 프로파일의 `CSS_ISOLATION`으로 한 번 확정한다. 에이전트가 작업마다 다시 선택하지 않는다. 아래는 `CSS_ISOLATION=global-layer`인 경우다.
+**CSS 격리 방식을 프로젝트 시작 시 하나 고른다.** 아래는 전역 CSS + `@layer`를 택한 경우다.
 
 ```css
 /* 층 순서 선언. 이 한 줄이 이후 모든 우선순위를 결정한다.
@@ -440,22 +392,19 @@ overrides를 맨 앞에 둔다
 
 ```css
 /* overrides 층 사용 예.
-   여기 외의 어떤 층에서도 !important를 쓰지 않는다.
-   overrides 안에서도 불가피한 이유를 바로 앞에 기록한다. */
+   여기 외의 어떤 층에서도 !important를 쓰지 않는다. */
 @layer overrides {
   /* rule-exception: no-important -- 결제 위젯이 !important로 색을 고정한다 */
   .payment_wrap .vendor_btn { color: var(--color-text-default) !important; }
 }
 ```
 
-### 조건부 MUST / SHOULD
+### 조건부 MUST
 
 ```text
-CSS_ISOLATION = global-layer 인 경우
+CSS 격리 방식 = 전역 @layer 를 선택한 경우
   -> 프로젝트의 모든 CSS는 선언된 @layer 안에 작성한다  [MUST / PROJECT / 기계]
   -> 층 밖의 스타일 규칙 작성을 금지한다
-  -> !important는 overrides 층 밖에서 금지한다            [MUST / PROJECT / 기계]
-  -> overrides 안에서도 불가피한 경우에만 쓰고 사유를 남긴다 [SHOULD / PROJECT / 기계+의미]
 ```
 
 층 밖에 규칙 하나만 남아도 그것이 모든 층의 일반 선언을 이기므로 아키텍처에 구멍이 생긴다. 명세상 동작이므로 취향 문제가 아니다.
@@ -479,23 +428,19 @@ CSS_ISOLATION = global-layer 인 경우
 | `.left_box` | 위치가 바뀌면 이름이 거짓말이 된다 | `.column_nav` |
 | `.mt_20` | 값이 이름에 박혀 토큰을 무력화한다 | 부모가 간격 소유 |
 
-`.mt_20` 같은 값 기반 유틸 금지는 `UTILITY_STYLE=disallow`일 때 적용한다. Tailwind처럼 유틸리티 우선 체계를 택했다면 그건 규칙 위반이 아니라 다른 규칙 체계다.
+`.mt_20` 금지는 유틸리티 우선 방식을 택하지 않은 경우에 한한다. Tailwind를 택했다면 그건 규칙 위반이 아니라 다른 규칙 체계다.
 
 **JS 훅 분리 — SHOULD / PROJECT / 기계**
-
-방식은 프로젝트 프로파일의 `JS_HOOK`을 따른다. 핵심은 스타일 클래스와 동작 훅을 같은 이름으로 겸용하지 않는 것이다.
-
-`JS_HOOK=class-prefix`인 경우:
 
 ```text
 ._toggle_btn   JS 전용. CSS 규칙 작성 금지
 ```
 
-`JS_HOOK=ref`, `data-attribute`, `data-testid`를 쓰는 환경에서는 별도 접두사 클래스가 필요 없다. 에이전트가 기존 훅 방식을 다른 방식으로 바꾸지 않는다.
+React `ref`, Vue `ref`, `data-testid`를 쓰는 환경이면 이미 분리돼 있으므로 접두사 규칙이 중복이다. 전역 CSS + jQuery 계열 코드베이스에서만 도입한다.
 
 ## 3.3 토큰 — SHOULD / PROJECT / 기계
 
-**색상과 나머지에 서로 다른 규칙을 적용한다.** 아래 예시는 `COLOR_TOKEN=two-tier`인 경우다. `three-tier`를 선택한 프로젝트에서는 기존 3단 토큰 체계를 그대로 따른다.
+**색상과 나머지에 서로 다른 규칙을 적용한다.**
 
 ```css
 @layer tokens {
@@ -644,17 +589,11 @@ transparent, currentColor, inherit
 
 ## 3.6 상태
 
-**상태를 두 종류로 나눈다.** 접근성 의미를 올바르게 노출하는 요구와, 그 상태를 CSS/앱에서 어떻게 관리할지는 근거를 분리한다.
+**상태를 두 종류로 나눈다.**
 
-### A. 접근성 의미가 있는 상태
+### A. 접근성 의미가 있는 상태 — MUST / WCAG / 기계+의미
 
-**상태 의미 노출 — MUST / WCAG / 기계+의미**
-
-네이티브 속성 또는 ARIA 속성을 **정확한 요소에** 쓴다. 예를 들어 `aria-expanded`는 펼침/접힘을 제어하는 트리거에 둔다.
-
-**상태 소스 단일화 — SHOULD / PROJECT / 기계+의미**
-
-CSS는 가능하면 같은 네이티브/ARIA 상태를 직접 선택한다. `.is_open`처럼 동일 상태를 별도 클래스로 중복 관리하면 두 값이 어긋날 수 있으므로 피한다.
+네이티브 속성 또는 ARIA 속성을 **정확한 요소에** 쓴다. CSS는 그 속성을 선택자로 읽는다.
 
 ```html
 <!-- aria-expanded는 "펼치고 접는 버튼"에 붙는다. 패널에 붙이면 안 된다.
@@ -683,7 +622,7 @@ CSS는 가능하면 같은 네이티브/ARIA 상태를 직접 선택한다. `.is
 
 ### B. 시각적, 애플리케이션 내부 상태 — SHOULD / PROJECT / 의미
 
-대응하는 ARIA 속성이 없는 상태는 클래스나 `data-*`로 관리한다. 정의되지 않은 `aria-*`를 앱 내부 상태 저장용으로 새로 만들지 않는다.
+대응하는 ARIA 속성이 없는 상태는 클래스나 `data-*`로 관리한다.
 
 ```css
 @layer state {
@@ -694,18 +633,14 @@ CSS는 가능하면 같은 네이티브/ARIA 상태를 직접 선택한다. `.is
 }
 ```
 
-**없는 ARIA 속성을 억지로 만들어 쓰지 않는다 — MUST / PROJECT.** `aria-*`는 정해진 속성만 사용한다.
+**없는 ARIA 속성을 억지로 만들어 쓰지 않는다.** `aria-*`는 정해진 것만 유효하다.
 
-### C. 포커스
-
-**키보드 포커스 가시성 — MUST / WCAG / 기계+의미**
-
-키보드 사용자가 현재 포커스를 명확히 확인할 수 있어야 한다. 특정 의사 클래스 자체가 요구사항은 아니다.
-
-**`:focus-visible` 우선 — SHOULD / PROJECT / 기계+의미**
+### C. 포커스 — MUST / WCAG / 기계+의미
 
 ```css
 @layer state {
+  /* 요구사항은 특정 의사 클래스가 아니라 "키보드 포커스의 가시성"이다.
+     :focus-visible을 우선하되, :focus를 써도 가시성만 보장되면 된다. */
   .btn:focus-visible {
     outline: 2px solid var(--color-border-focus);
     outline-offset: 2px;
@@ -713,7 +648,7 @@ CSS는 가능하면 같은 네이티브/ARIA 상태를 직접 선택한다. `.is
 }
 ```
 
-`outline: none`만 쓰고 동등 이상의 대체 포커스 표시가 없으면 MUST / WCAG 위반이다.
+`outline: none`만 쓰고 대체 스타일이 없으면 위반이다.
 
 ---
 
@@ -737,8 +672,6 @@ CSS는 가능하면 같은 네이티브/ARIA 상태를 직접 선택한다. `.is
 
 ## 5.1 기계 검증
 
-검사 명령은 프로젝트 프로파일의 `VALIDATE_HTML` / `VALIDATE_CSS` 또는 프로젝트에 실제 정의된 scripts를 사용한다. 에이전트가 `npm run lint` 같은 명령을 임의로 추측하거나 새 검사 명령을 만들지 않는다.
-
 **검사기는 파서 기반으로 구현한다.** 정규식과 건수 비교는 아래 이유로 신뢰할 수 없다.
 
 ```text
@@ -760,39 +693,37 @@ HTML -> parse5 / jsdom 등으로 DOM을 만든 뒤 검사한다.
 
 ```text
 --- MUST / HTML ---
-[ ] [DOCUMENT] 인코딩 선언이 첫 1024바이트 안에 있다
-[ ] [DOCUMENT] 화면에 보이는 main이 1개다
-[ ] [DOCUMENT] main이 중첩되지 않았다
-[ ] [ALL] alt 속성이 없는 img가 0개다
-[ ] [ALL] font, center 요소가 0개다
+[ ] html에 lang 속성이 있다
+[ ] 인코딩 선언이 첫 1024바이트 안에 있다
+[ ] 화면에 보이는 main이 1개다
+[ ] main이 중첩되지 않았다
+[ ] alt 속성이 없는 img가 0개다
+[ ] font, center 요소가 0개다
 
 --- MUST / WCAG ---
-[ ] [DOCUMENT] html에 lang 속성이 있다
-[ ] [ALL] 접근 가능한 이름이 없는 폼 컨트롤이 0개다
-[ ] [ALL] outline을 제거했는데 대체 포커스 표시가 없는 규칙이 0건이다
-[ ] [DOCUMENT] 반복 블록 우회 수단이 존재한다
+[ ] 접근 가능한 이름이 없는 폼 컨트롤이 0개다
+[ ] outline: none만 있고 대체 스타일이 없는 규칙이 0건이다
+[ ] 반복 블록 우회 수단이 존재한다
 
 --- MUST / PROJECT ---
-[ ] [DOCUMENT] charset이 head 최상단에 있다
-[ ] [DOCUMENT] viewport가 선언돼 있다
-[ ] [DOCUMENT] 스킵 링크가 첫 포커스 요소다
-[ ] [ALL] form 안 button에 type이 명시돼 있다
-[ ] [DOCUMENT] heading 레벨을 순방향으로 건너뛴 곳이 0개다
-[ ] [DOCUMENT] H1_POLICY=exactly-one이면 h1이 1개다
-[ ] [ALL] 레이아웃 목적으로 의심되는 table이 0개다
-[ ] [ALL] 패널 요소에 붙은 aria-expanded가 0개다
-[ ] [ALL] 정의되지 않은 aria-* 를 앱 상태용으로 만든 곳이 0개다
-[ ] (CSS_ISOLATION=global-layer) @layer 밖의 프로젝트 CSS 규칙이 0건이다
-[ ] (CSS_ISOLATION=global-layer) overrides 층 밖의 !important가 0건이다
+[ ] charset이 head 최상단에 있다
+[ ] viewport가 선언돼 있다
+[ ] 스킵 링크가 첫 포커스 요소다
+[ ] form 안 button에 type이 명시돼 있다
+[ ] heading 레벨을 순방향으로 건너뛴 곳이 0개다
+[ ] h1이 1개다
+[ ] 레이아웃 목적으로 의심되는 table이 0개다
+[ ] 패널 요소에 붙은 aria-expanded가 0개다
+[ ] (전역 @layer 선택 시) @layer 밖의 프로젝트 CSS 규칙이 0건이다
 
 --- SHOULD / PROJECT (예외 주석 연결 후 판정) ---
-[ ] overrides 안의 !important마다 rule-exception 사유가 연결돼 있다
+[ ] overrides 층 밖의 !important가 0건이다
 [ ] ID 선택자가 0건이다
 [ ] 인라인 style이 0건이다
 [ ] 컴포넌트 루트에 외부 margin이 0건이다
 [ ] 컴포넌트 루트에 페이지 기준 absolute/fixed가 0건이다
 [ ] 컴포넌트에서 --palette-* 직접 참조가 0건이다
-[ ] JS_HOOK=class-prefix이면 _ 로 시작하는 JS 훅 클래스에 CSS 규칙이 0건이다
+[ ] _ 로 시작하는 클래스에 CSS 규칙이 0건이다
 
 --- 기계+의미 (의심 패턴만 보고, 최종 판단은 5.2에서) ---
 [ ] div[onclick], span[onclick]
@@ -809,7 +740,6 @@ alt 텍스트가 이미지의 역할을 실제로 설명하는가
   (alt="" 인 이미지가 정말 장식용인가)
 heading이 뒤따르는 내용을 설명하는가
 label 텍스트가 입력의 목적을 설명하는가
-DOCUMENT라면 title이 페이지 내용을 설명하고 다른 페이지와 구분되는가
 이 UI가 "이동"인가 "실행"인가 (a / button 최종 판단)
 section이 독립적으로 식별 가능한 주제 묶음인가
 article이 떼어내도 말이 되는 단위인가
@@ -820,22 +750,18 @@ fieldset이 묶음 자체에 의미가 있는 그룹에만 쓰였는가
 클래스 이름이 역할을 가리키는가 (모양이 아니라)
 선택자 깊이 초과가 진입점 클래스 안에 갇혀 있는가
 토큰 리터럴 예외가 실제로 일회성 값인가
-새 토큰/클래스/컴포넌트가 정말 필요한가, 기존 것을 재사용할 수 없는가
-요청과 무관한 DOM/CSS를 바꾸지 않았는가
-DOCUMENT 규칙을 COMPONENT 안에 잘못 적용하지 않았는가
 ```
 
 ## 5.3 3층 운영 구조
 
 ```text
-1. html-css-rules.md   이 문서. 근거, 예제, 예외를 담은 원본 규격서.
-                       사람이 읽고 판단할 때 참조한다.
+1. references/html-css-rules.md  이 문서. 근거, 예제, 예외를 담은 원본 규격서.
+                                 사람이 읽고 판단할 때 참조한다.
 
-2. agent-rules.md      실행용 축약본. 에이전트 컨텍스트에 넣는다.
-                       PROJECT_PROFILE, 적용 범위, 기존 코드 보존 행동도 여기서 강제한다.
+2. SKILL.md                      실행용 축약본. 에이전트 컨텍스트에 들어간다.
 
-3. 검사기              기계 판정 가능한 규칙은 에이전트에게 기억시키지 않고
-                       파서 기반 코드로 강제한다.
+3. 검사기                        기계 판정 가능한 규칙은 에이전트에게 기억시키지 않고
+                                 파서 기반 코드로 강제한다.
 ```
 
 기계로 강제할 수 있는 것을 프롬프트에 넣으면 토큰만 쓰고 신뢰도는 낮다. 반대로 의미 판단 항목을 검사기에 넣으면 오탐만 쌓인다.
@@ -844,16 +770,14 @@ DOCUMENT 규칙을 COMPONENT 안에 잘못 적용하지 않았는가
 
 # 부록. 프로젝트 시작 시 결정할 것
 
-`PROJECT` 출처 규칙 중 선택지가 있는 값은 여기서 확정하고 `agent-rules.md`의 `PROJECT_PROFILE`에 기록한다. 에이전트가 작업마다 다시 고르지 않는다.
+`PROJECT` 출처 규칙은 여기서 확정된다.
 
 ```text
-1. CSS 격리 방식       global-layer / css-modules / tailwind
-2. 유틸리티 허용 여부 allow / disallow
-3. JS 훅 분리 방식     class-prefix / ref / data-attribute / data-testid
-4. h1 정책             exactly-one / project-defined
-5. 색상 토큰 단계      two-tier / three-tier
-6. HTML 검사 명령      project-defined command / none
-7. CSS 검사 명령       project-defined command / none
+1. CSS 격리 방식     전역 @layer / CSS Modules / Tailwind
+2. 유틸리티 허용 여부  (3.2의 .mt_20 금지 적용 여부가 갈린다)
+3. JS 훅 분리 방식    접두사 / ref / data-testid
+4. h1 단일 정책      목록 페이지에서 예외를 둘 것인가
+5. 색상 토큰 단계     2단 / 3단
 ```
 
 ## 도입 순서

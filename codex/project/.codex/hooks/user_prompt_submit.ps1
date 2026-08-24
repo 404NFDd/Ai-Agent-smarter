@@ -134,11 +134,25 @@ if ($isLargeTask) {
 $lines = @('[Codex 운영 컨텍스트]')
 
 # 강제 읽기(B 항목 1): 매칭 skill 경로만 추천하지 않고 본문을 주입.
+# 같은 skill 을 매 프롬프트마다 다시 주입하면 컨텍스트가 선형으로 불어난다.
+# 한 세션에 skill 당 한 번만 본문을 넣고, 이후에는 경로만 상기시킨다.
+$injectedPath = Join-Path $memoryDir '.injected_skills'
+$alreadyInjected = @()
+if (Test-Path -LiteralPath $injectedPath) {
+    $alreadyInjected = @(Get-Content -LiteralPath $injectedPath -Encoding UTF8 | Where-Object { $_ -ne '' })
+}
+$newlyInjected = @()
+
 $injectedAny = $false
 $budget = 4000
 $usedBudget = 0
 foreach ($skillPath in $skills) {
     $skillName = ($skillPath -split '/')[-2]
+    if ($alreadyInjected -contains $skillName) {
+        $lines += "[skill: $skillName] 이번 세션에 이미 주입했다. 필요하면 .agents/skills/$skillName/SKILL.md 를 직접 읽는다."
+        $injectedAny = $true
+        continue
+    }
     $remaining = $budget - $usedBudget
     if ($remaining -le 200) { break }
     $content = Get-SkillContent -SkillName $skillName -Budget $remaining
@@ -147,8 +161,12 @@ foreach ($skillPath in $skills) {
         $lines += "[skill 매뉴얼: $skillName]"
         $lines += $content
         $usedBudget += $content.Length
+        $newlyInjected += $skillName
         $injectedAny = $true
     }
+}
+if ($newlyInjected.Count -gt 0) {
+    Add-Content -LiteralPath $injectedPath -Encoding UTF8 -Value ($newlyInjected -join "`n")
 }
 if (-not $injectedAny) {
     $lines += '관련 skill이 있으면 작업 전에 .agents/skills/INDEX.md 를 확인하세요.'

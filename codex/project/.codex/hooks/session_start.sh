@@ -11,7 +11,7 @@ if [ -f "$MEM/MODIFIED_FILES.md" ]; then
   mv "$MEM/MODIFIED_FILES.md" "$MEM/MODIFIED_FILES.$stamp.md" 2>/dev/null
 fi
 printf '# MODIFIED FILES\n\n| 일시 | 파일 | 작업 | 메모 |\n| --- | --- | --- | --- |\n' > "$MEM/MODIFIED_FILES.md"
-rm -f "$MEM/.stop_guard_state" "$MEM/.plan_required" "$MEM/.plan_gate_state" "$MEM/.session_blocks"
+rm -f "$MEM/.stop_guard_state" "$MEM/.plan_required" "$MEM/.plan_gate_state" "$MEM/.session_blocks" "$MEM/.injected_skills"
 
 ctx="[작업 기억 복구]"
 files=()

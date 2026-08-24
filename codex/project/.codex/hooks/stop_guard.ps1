@@ -148,6 +148,8 @@ foreach ($row in $modifiedRows) {
 }
 
 $reasons = @()
+# advisory 는 종료를 막지 않고 additionalContext 로만 전달한다.
+$advisories = @()
 
 # 게이트 1: verify 검사 실패. reviewer/tester 서브에이전트 보고 요구.
 if ($failedChecks -gt 0) {
@@ -159,11 +161,11 @@ if ($hasSecurityChange -and -not $hasSecurityReport) {
     $reasons += "인증/권한/비밀정보 관련 파일이 수정됐습니다. security-reviewer 서브에이전트 실행 후 QA.md에 ## security-reviewer 보고를 추가하세요."
 }
 
-# 게이트 3: CHECKLIST 미완료.
+# 안내 3: CHECKLIST 미완료. 여러 세션에 걸쳐 소진하므로 block 하지 않는다(advisory).
 if (Test-Path -LiteralPath $checklistPath) {
     $openItems = Select-String -LiteralPath $checklistPath -Encoding UTF8 -Pattern '^\s*-\s*\[\s\]'
     if ($openItems.Count -gt 0) {
-        $reasons += 'CHECKLIST.md에 미완료 항목(- [ ])이 남아 있습니다.'
+        $advisories += 'CHECKLIST.md에 미완료 항목(- [ ])이 남아 있습니다. 남은 항목을 최종 답변에 명시하세요.'
     }
 }
 
@@ -180,18 +182,18 @@ if ($failedQa.Count -gt 0) {
     $reasons += 'QA.md에 실패/확인 필요 검증 행이 남아 있습니다. tester 서브에이전트로 검증 보완 후 결과를 반영하세요.'
 }
 
-# 보조 안내: 수정 파일 있고 verify 통과 + 보안 아닌 경우 reviewer 권고(비강제).
-if ($modifiedRows.Count -gt 0 -and $failedChecks -eq 0 -and -not $hasSecurityChange) {
-    $reasons += "수정 파일이 $($modifiedRows.Count)건 있습니다. 품질 강화를 위해 reviewer 서브에이전트(code review) 실행을 권장합니다."
+# 보조 안내: 서브에이전트 강제 실행은 토큰 소비가 크므로 block 하지 않는다(advisory).
+if ($modifiedRows.Count -ge 5) {
+    $advisories += "수정 파일이 $($modifiedRows.Count)건 있습니다. 필요하면 reviewer 서브에이전트로 코드 검토를 받으세요."
 }
 
 # 루프/토큰 과사용 방지(A+B+C):
-#   A. 게이트당 차단 한도 = 2회.
+#   A. 게이트당 차단 한도 = 1회.
 #   B. 세션 전역 차단 캡(SESSION_BLOCK_CAP). 누적 차단 수가 이 값을 넘으면 모든 게이트 advisory 전환(더 이상 block 안 함).
 #   C. 한도 도달 시 자동 해제가 아니라 '사용자에게 진행 여부 확인' block. 사용자 응답 후 통과.
 $utf8 = [System.Text.UTF8Encoding]::new($false)
-$GATE_BLOCK_LIMIT = 2
-$SESSION_BLOCK_CAP = 8
+$GATE_BLOCK_LIMIT = 1
+$SESSION_BLOCK_CAP = 3
 $sessionBlocksPath = Join-Path $memoryDir '.session_blocks'
 
 $blockCount = 0
@@ -250,7 +252,7 @@ if ($reasons.Count -gt 0) {
     if ($blockCount -ge $GATE_BLOCK_LIMIT) {
         # C: 한도 도달 → 사용자에게 진행 여부 확인 block(자동 해제 아님).
         [System.IO.File]::WriteAllText($statePath, "count=$blockCount`nreason=$reasonJoined`nasked=$reasonJoined", $utf8)
-        $askMsg = "게이트가 2회 차단했습니다. 사용자에게 진행 여부를 확인하세요. 사유: $reasonJoined. 사용자가 승인하면 그대로 완료하고, 거부하면 해당 작업을 중단하세요. (자동 해제 대신 사용자 확인으로 전환 - 토큰 낭비 방지)"
+        $askMsg = "게이트가 차단했습니다. 사용자에게 진행 여부를 확인하세요. 사유: $reasonJoined. 사용자가 승인하면 그대로 완료하고, 거부하면 해당 작업을 중단하세요. (자동 해제 대신 사용자 확인으로 전환 - 토큰 낭비 방지)"
         $payload = @{ decision = 'block'; reason = $askMsg }
     } else {
         [System.IO.File]::WriteAllText($statePath, "count=$blockCount`nreason=$reasonJoined`nasked=", $utf8)
@@ -258,7 +260,17 @@ if ($reasons.Count -gt 0) {
     }
 } else {
     if (Test-Path -LiteralPath $statePath) { Remove-Item -LiteralPath $statePath -Force }
-    $payload = @{ continue = $true }
+    if ($advisories.Count -gt 0) {
+        $payload = @{
+            continue = $true
+            hookSpecificOutput = @{
+                hookEventName = 'Stop'
+                additionalContext = ($advisories -join ' ')
+            }
+        }
+    } else {
+        $payload = @{ continue = $true }
+    }
 }
 
 Write-Output ($payload | ConvertTo-Json -Depth 5 -Compress)

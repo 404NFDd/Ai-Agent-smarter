@@ -51,7 +51,8 @@ done
 # 수정 파일 + 보안 변경 감지.
 modrows=0; hassec=0
 if [ -f "$MEM/MODIFIED_FILES.md" ]; then
-  modrows=$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MEM/MODIFIED_FILES.md" 2>/dev/null || echo 0)
+  modrows=$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MEM/MODIFIED_FILES.md" 2>/dev/null | head -1)
+  [ -z "$modrows" ] && modrows=0
   grep -qiE 'auth|login|token|password|secret|credential|인증|권한|비밀|토큰' "$MEM/MODIFIED_FILES.md" && hassec=1
 fi
 
@@ -61,23 +62,30 @@ hasrev=0; hassecrev=0
 [ -f "$MEM/QA.md" ] && grep -qE '^##\s+security-reviewer\s+보고' "$MEM/QA.md" && hassecrev=1
 
 # 실패 QA 행.
+# 표의 '결과' 열만 본다. 본문 아무 곳의 '실패' 단어로 오차단되지 않게 한다.
 failedqa=0
-[ -f "$MEM/QA.md" ] && failedqa=$(grep -cE '실패|확인 필요' "$MEM/QA.md" 2>/dev/null || echo 0)
+[ -f "$MEM/QA.md" ] && failedqa=$(grep -E '^\|' "$MEM/QA.md" | awk -F'|' 'NF>=5 && $4 ~ /[0-9]{4}-[0-9]{2}-[0-9]{2}/ {print $3}' | grep -cE '실패|확인 필요' | head -1)
+[ -z "$failedqa" ] && failedqa=0
 
 # CHECKLIST 미완.
 openck=0
-[ -f "$MEM/CHECKLIST.md" ] && openck=$(grep -cE '^[[:space:]]*-[[:space:]]*\[[[:space:]]\]' "$MEM/CHECKLIST.md" 2>/dev/null || echo 0)
+[ -f "$MEM/CHECKLIST.md" ] && openck=$(grep -cE '^[[:space:]]*-[[:space:]]*\[[[:space:]]\]' "$MEM/CHECKLIST.md" 2>/dev/null | head -1)
+[ -z "$openck" ] && openck=0
 
 reasons=()
+# advisory 는 종료를 막지 않고 additionalContext 로만 전달한다.
+advisories=()
 [ "$failed" -gt 0 ] && reasons+=("verify.toml 검사 $failed 건 실패($summary). 실패한 검사를 수정하고 reviewer/tester 서브에이전트 실행 후 QA.md 에 ## reviewer 보고(또는 ## tester 보고)를 추가하세요.")
 [ "$hassec" = "1" ] && [ "$hassecrev" = "0" ] && reasons+=("인증/권한/비밀정보 관련 파일이 수정됐습니다. security-reviewer 서브에이전트 실행 후 QA.md 에 ## security-reviewer 보고를 추가하세요.")
-[ "$openck" -gt 0 ] && reasons+=("CHECKLIST.md 에 미완료 항목(- [ ])이 남아 있습니다.")
+# CHECKLIST 는 여러 세션에 걸쳐 소진하므로 block 하지 않는다(advisory).
+[ "$openck" -gt 0 ] && advisories+=("CHECKLIST.md 에 미완료 항목(- [ ])이 남아 있습니다. 남은 항목을 최종 답변에 명시하세요.")
 [ "$failedqa" -gt 0 ] && reasons+=("QA.md 에 실패/확인 필요 검증 행이 남아 있습니다. tester 서브에이전트로 검증 보완 후 결과를 반영하세요.")
-[ "$modrows" -gt 0 ] && [ "$failed" = "0" ] && [ "$hassec" = "0" ] && reasons+=("수정 파일이 $modrows 건 있습니다. 품질 강화를 위해 reviewer 서브에이전트(code review) 실행을 권장합니다.")
+# 서브에이전트 강제 실행은 토큰 소비가 크므로 block 하지 않는다(advisory).
+[ "$modrows" -ge 5 ] && advisories+=("수정 파일이 $modrows 건 있습니다. 필요하면 reviewer 서브에이전트로 코드 검토를 받으세요.")
 
 # 루프/토큰 과사용 방지(A+B+C): 게이트당 한도 2, 세션 전역 캡 8, 한도 시 사용자 확인 block.
-GATE_LIMIT=2
-SESSION_CAP=8
+GATE_LIMIT=1
+SESSION_CAP=3
 SB="$MEM/.session_blocks"
 sb=0; [ -f "$SB" ] && sb=$(cat "$SB" 2>/dev/null | grep -oE '[0-9]+' || echo 0)
 
@@ -100,14 +108,19 @@ if [ "${#reasons[@]}" -gt 0 ]; then
   # C: 같은 사유로 이미 사용자 확인 요청했으면 → 통과.
   if [ "$count" -ge "$GATE_LIMIT" ] && [ "$asked" = "$joined" ]; then
     rm -f "$MEM/.stop_guard_state"
-    printf '{"continue":true}\n'
+    if [ "${#advisories[@]}" -gt 0 ]; then
+      adv=$(IFS=' ' ; printf '%s' "${advisories[*]}")
+      printf '{"continue":true,"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":%s}}\n' "$(printf '%s' "$adv" | jq -Rs .)"
+    else
+      printf '{"continue":true}\n'
+    fi
     exit 0
   fi
   # 세션 전역 차단 수 증가.
   echo $((sb+1)) > "$SB"
   if [ "$count" -ge "$GATE_LIMIT" ]; then
     printf 'count=%s\nreason=%s\nasked=%s\n' "$count" "$joined" "$joined" > "$MEM/.stop_guard_state"
-    askmsg="게이트가 2회 차단했습니다. 사용자에게 진행 여부를 확인하세요. 사유: $joined 사용자가 승인하면 완료, 거부하면 중단하세요. (자동 해제 대신 사용자 확인으로 전환 - 토큰 낭비 방지)"
+    askmsg="게이트가 차단했습니다. 사용자에게 진행 여부를 확인하세요. 사유: $joined 사용자가 승인하면 완료, 거부하면 중단하세요. (자동 해제 대신 사용자 확인으로 전환 - 토큰 낭비 방지)"
     printf '{"decision":"block","reason":%s}\n' "$(printf '%s' "$askmsg" | jq -Rs .)"
   else
     printf 'count=%s\nreason=%s\nasked=\n' "$count" "$joined" > "$MEM/.stop_guard_state"
@@ -115,5 +128,10 @@ if [ "${#reasons[@]}" -gt 0 ]; then
   fi
 else
   rm -f "$MEM/.stop_guard_state"
-  printf '{"continue":true}\n'
+  if [ "${#advisories[@]}" -gt 0 ]; then
+    adv=$(IFS=' ' ; printf '%s' "${advisories[*]}")
+    printf '{"continue":true,"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":%s}}\n' "$(printf '%s' "$adv" | jq -Rs .)"
+  else
+    printf '{"continue":true}\n'
+  fi
 fi

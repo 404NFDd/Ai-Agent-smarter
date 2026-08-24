@@ -10,6 +10,8 @@ New-Item -ItemType Directory -Force -Path $memoryDir | Out-Null
 $modifiedPath = Join-Path $memoryDir 'MODIFIED_FILES.md'
 $qaPath = Join-Path $memoryDir 'QA.md'
 $metricsPath = Join-Path $memoryDir 'METRICS.md'
+# 셀프체크 리마인더 주입 주기(누적 수정 건수 기준). 1 이면 매번.
+$REMIND_EVERY = 3
 $raw = [Console]::In.ReadToEnd().TrimStart([char]0xFEFF)
 $toolName = ''
 $toolCommand = ''
@@ -83,25 +85,28 @@ if (Test-Path -LiteralPath $metricsPath) {
     Add-Content -LiteralPath $metricsPath -Encoding UTF8 -Value "| $now | post_tool_use tool=$toolName files=$($modifiedFiles.Count) |"
 }
 
-# 셀프체크 리마인더 구조화(D 항목 12): 수정 파일 / 오류처리 / 보안위험 3항.
-$contextMsg = '[PostToolUse] 수정 또는 검증 흔적을 memory 파일에 기록했습니다.'
-if ($modifiedFiles.Count -gt 0) {
-    $securityKeywords = 'auth|login|token|password|secret|credential|인증|권한|비밀|토큰'
-    $hasSecurityChange = $false
-    foreach ($f in $modifiedFiles) {
-        if ($f -match "(?i)$securityKeywords") { $hasSecurityChange = $true; break }
-    }
+# 셀프체크 리마인더. 수정이 없으면 컨텍스트를 늘리지 않는다.
+if ($modifiedFiles.Count -eq 0) { exit }
 
-    $contextMsg += "`n[셀프체크 리마인더]"
-    $contextMsg += "`n- 수정 파일 $($modifiedFiles.Count)건: " + ($modifiedFiles -join ', ')
-    $contextMsg += "`n- 에러 처리/예외 경로를 추가했나요? 빠진 오류 처리가 없는지 확인하세요."
-    if ($hasSecurityChange) {
-        $contextMsg += "`n- 보안상 위험한 부분은 없나요? 인증/권한/입력검증/secret 노출 점검 후 security-reviewer 서브에이전트 검토를 권장합니다."
-        $contextMsg += "`n- 수정 파일이 $($modifiedFiles.Count)개 있음: reviewer 서브에이전트로 코드 검토를 권장합니다."
-    } else {
-        $contextMsg += "`n- 보안상 위험한 부분은 없나요? 입력 검증과 secret 노출 여부를 확인하세요."
-        $contextMsg += "`n- 수정 파일이 $($modifiedFiles.Count)개 있음: reviewer 서브에이전트로 코드 검토를 권장합니다."
-    }
+# 보안 키워드는 전체 경로가 아니라 파일명으로 본다. 상위 폴더명에 의한 오탐을 막는다.
+$securityKeywords = 'auth|login|token|password|secret|credential|permission|인증|권한|비밀|토큰'
+$hasSecurityChange = $false
+foreach ($f in $modifiedFiles) {
+    if ([System.IO.Path]::GetFileName($f) -match "(?i)$securityKeywords") { $hasSecurityChange = $true; break }
+}
+
+# 보안 관련이면 즉시, 그 외에는 누적 REMIND_EVERY 건마다 한 번만.
+$total = 0
+if (Test-Path -LiteralPath $modifiedPath) {
+    $total = (Select-String -LiteralPath $modifiedPath -Encoding UTF8 -Pattern '^\| \d{4}-\d{2}-\d{2}').Count
+}
+if (-not $hasSecurityChange -and ($total % $REMIND_EVERY) -ne 0) { exit }
+
+$contextMsg = "[셀프체크] " + ($modifiedFiles -join ', ') + " (누적 $total 건)"
+if ($hasSecurityChange) {
+    $contextMsg += "`n- 인증/권한/입력 검증/secret 노출을 점검하세요. security-reviewer 보고는 QA.md 의 ## security-reviewer 보고 헤더 아래에 남깁니다."
+} else {
+    $contextMsg += "`n- 오류 처리, 예외 경로, 입력 검증 누락을 확인하세요."
 }
 
 $payload = @{

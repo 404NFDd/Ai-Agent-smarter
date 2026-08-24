@@ -44,19 +44,30 @@ if [ "$islarge" = "1" ]; then
 fi
 
 # skill 본문 주입(강제 읽기, 4KB 상한).
+# 같은 skill 을 매 프롬프트마다 다시 주입하면 컨텍스트가 선형으로 불어난다.
+# 한 세션에 skill 당 한 번만 본문을 넣고, 이후에는 경로만 상기시킨다.
+INJECTED="$MEM/.injected_skills"
+touch "$INJECTED" 2>/dev/null || true
+
 ctx="[Codex 운영 컨텍스트]"
 injected=0
 budget=4000
 used=0
 for s in "${skills[@]:-}"; do
   [ -z "$s" ] && continue
-  remaining=$((budget - used))
-  [ "$remaining" -le 200 ] && break
   f="$SKILLS/$s/SKILL.md"
   [ -f "$f" ] || continue
+  if grep -qxF "$s" "$INJECTED" 2>/dev/null; then
+    ctx="$ctx"$'\n'"[skill: $s] 이번 세션에 이미 주입했다. 필요하면 .agents/skills/$s/SKILL.md 를 직접 읽는다."
+    injected=1
+    continue
+  fi
+  remaining=$((budget - used))
+  [ "$remaining" -le 200 ] && break
   content=$(head -c "$remaining" "$f")
   ctx="$ctx"$'\n'$'\n'"[skill 매뉴얼: $s]"$'\n'"$content"
   used=$((used + ${#content}))
+  printf '%s\n' "$s" >> "$INJECTED"
   injected=1
 done
 [ "$injected" = "0" ] && ctx="$ctx"$'\n'"관련 skill이 있으면 작업 전에 .agents/skills/INDEX.md 를 확인하세요."

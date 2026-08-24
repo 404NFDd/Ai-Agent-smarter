@@ -33,6 +33,8 @@ $sessionBlocksPath = Join-Path $memoryDir '.session_blocks'
 if (Test-Path -LiteralPath $sessionBlocksPath) { Remove-Item -LiteralPath $sessionBlocksPath -Force }
 if (Test-Path -LiteralPath (Join-Path $memoryDir '.plan_gate_state')) { Remove-Item -LiteralPath (Join-Path $memoryDir '.plan_gate_state') -Force }
 if (Test-Path -LiteralPath (Join-Path $memoryDir '.plan_required')) { Remove-Item -LiteralPath (Join-Path $memoryDir '.plan_required') -Force }
+# skill 본문 주입 기록도 세션마다 초기화한다.
+if (Test-Path -LiteralPath (Join-Path $memoryDir '.injected_skills')) { Remove-Item -LiteralPath (Join-Path $memoryDir '.injected_skills') -Force }
 
 $existing = @()
 foreach ($file in $memoryFiles) {

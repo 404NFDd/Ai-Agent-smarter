@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Stop hook: 완료 후 자동 품질 검사(공장 검수 라인).
 #   1) .claude/verify.toml 의 검증 명령을 실행해 결과를 QA.md 에 기록한다.
-#   2) 검증 실패 / 보안 변경 미검토 / CHECKLIST 미완료 / QA 실패행이 있으면 종료를 block 한다.
-#   3) 루프와 토큰 낭비를 막기 위해 같은 사유 2회 차단 후에는 사용자 확인으로 전환하고,
-#      세션 누적 차단이 8회를 넘으면 모든 게이트를 advisory 로 내린다.
+#   2) 검증 실패 / 보안 변경 미검토 / QA 실패행이 있으면 종료를 block 한다.
+#      CHECKLIST 미완료와 수정 파일 누적은 block 하지 않고 advisory(systemMessage)로만 알린다.
+#   3) 루프와 토큰 낭비를 막기 위해 같은 사유는 1회만 차단하고, 세션 누적 차단이 3회를 넘으면
+#      모든 게이트를 advisory 로 내린다.
 # 의존성: bash, coreutils(timeout 있으면 사용), grep -E (jq 불필요)
 set -u
 
@@ -19,8 +20,11 @@ SESSION_BLOCKS="$MEM/.session_blocks"
 VERIFY="$PROJECT_ROOT/.claude/verify.toml"
 NOW="$(date '+%Y-%m-%d %H:%M')"
 
-GATE_BLOCK_LIMIT=2
-SESSION_BLOCK_CAP=8
+GATE_BLOCK_LIMIT=1
+SESSION_BLOCK_CAP=3
+
+# advisory 는 종료를 막지 않고 systemMessage 로만 전달한다.
+ADVISORIES=""
 
 RAW="$(cat)"
 
@@ -34,7 +38,13 @@ emit_block() {
   exit 0
 }
 emit_pass() {
-  printf '{"continue":true}\n'
+  local adv
+  adv="$(printf '%s' "$ADVISORIES" | sed -e 's/[[:space:]]*$//')"
+  if [ -n "$adv" ]; then
+    printf '{"continue":true,"systemMessage":"%s"}\n' "$(printf '%s' "$adv" | json_escape)"
+  else
+    printf '{"continue":true}\n'
+  fi
   exit 0
 }
 
@@ -118,6 +128,7 @@ PASSED=$((RUN_CHECKS - FAILED_CHECKS))
 # ---------------------------------------------------------------
 REASONS=""
 add_reason() { REASONS="$REASONS$1 "; }
+add_advisory() { ADVISORIES="$ADVISORIES$1 "; }
 
 if [ "$FAILED_CHECKS" -gt 0 ]; then
   add_reason "verify.toml 검사 ${FAILED_CHECKS}건 실패(${SUMMARY# }). 실패한 검사를 수정하고 reviewer 또는 tester 서브에이전트를 실행한 뒤 QA.md 에 '## reviewer 보고' 또는 '## tester 보고' 를 추가한다."
@@ -125,7 +136,7 @@ fi
 
 # 보안 관련 수정인데 security-reviewer 보고가 없는 경우
 HAS_SEC_CHANGE=0
-if [ -f "$MODIFIED" ] && grep -qiE '^\| [0-9]{4}-.*(auth|login|token|password|secret|credential|session|permission|인증|권한|비밀|토큰)' "$MODIFIED"; then
+if [ -f "$MODIFIED" ] && grep -qiE '^\| [0-9]{4}-.*(auth|login|token|password|secret|credential|permission|인증|권한|비밀|토큰)' "$MODIFIED"; then
   HAS_SEC_CHANGE=1
 fi
 HAS_SEC_REPORT=0
@@ -134,9 +145,9 @@ if [ "$HAS_SEC_CHANGE" -eq 1 ] && [ "$HAS_SEC_REPORT" -eq 0 ]; then
   add_reason "인증/권한/비밀정보 관련 파일이 수정됐다. security-reviewer 서브에이전트를 실행하고 QA.md 에 '## security-reviewer 보고' 를 추가한다."
 fi
 
-# CHECKLIST 미완료
+# CHECKLIST 미완료(advisory). 체크리스트는 여러 세션에 걸쳐 소진하므로 종료를 막지 않는다.
 if [ -f "$CHECKLIST" ] && grep -qE '^[[:space:]]*-[[:space:]]*\[[[:space:]]\]' "$CHECKLIST"; then
-  add_reason "CHECKLIST.md 에 미완료 항목(- [ ])이 남아 있다."
+  add_advisory "CHECKLIST.md 에 미완료 항목(- [ ])이 남아 있다. 남은 항목을 최종 답변에 명시한다."
 fi
 
 # QA 실패/확인 필요 행
@@ -144,11 +155,12 @@ if [ -f "$QA" ] && grep -E '^\|' "$QA" | awk -F'|' 'NF>=5 && $4 ~ /[0-9]{4}-[0-9
   add_reason "QA.md 에 실패 또는 확인 필요 검증 행이 남아 있다. tester 서브에이전트로 검증을 보완하고 결과를 반영한다."
 fi
 
-# 비강제 권고: 수정은 있는데 verify 통과 + 보안 변경 아님
-if [ -z "$REASONS" ] && [ -f "$MODIFIED" ]; then
-  MOD_ROWS="$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MODIFIED" 2>/dev/null || echo 0)"
+# 비강제 권고(advisory). 서브에이전트 강제 실행은 토큰 소비가 크므로 차단하지 않는다.
+if [ -f "$MODIFIED" ]; then
+  MOD_ROWS="$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MODIFIED" 2>/dev/null | head -1)"
+  [ -z "$MOD_ROWS" ] && MOD_ROWS=0
   if [ "$MOD_ROWS" -ge 5 ]; then
-    add_reason "수정 파일이 ${MOD_ROWS}건이다. 품질 강화를 위해 reviewer 서브에이전트로 코드 검토를 한 번 받는다."
+    add_advisory "수정 파일이 ${MOD_ROWS}건이다. 필요하면 reviewer 서브에이전트로 코드 검토를 받는다."
   fi
 fi
 
@@ -198,7 +210,7 @@ printf '%s' "$SESSION_COUNT" > "$SESSION_BLOCKS"
 
 if [ "$COUNT" -ge "$GATE_BLOCK_LIMIT" ]; then
   printf 'count=%s\nreason=%s\nasked=%s\n' "$COUNT" "$REASON_JOINED" "$REASON_JOINED" > "$STATE"
-  emit_block "게이트가 ${GATE_BLOCK_LIMIT}회 차단했다. 사용자에게 진행 여부를 확인한다. 사유: $REASON_JOINED 사용자가 승인하면 그대로 완료하고, 거부하면 해당 작업을 계속한다."
+  emit_block "게이트가 차단했다. 사용자에게 진행 여부를 확인한다. 사유: $REASON_JOINED 사용자가 승인하면 그대로 완료하고, 거부하면 해당 작업을 계속한다."
 else
   printf 'count=%s\nreason=%s\nasked=\n' "$COUNT" "$REASON_JOINED" > "$STATE"
   emit_block "$REASON_JOINED"

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # PostToolUse hook: 수정 파일 기록(CCTV) + 셀프체크 리마인더.
+# 리마인더는 컨텍스트에 누적되므로 매 편집마다 넣지 않고 REMIND_EVERY 건마다 한 번만 넣는다.
 # matcher: Edit|Write|MultiEdit|NotebookEdit|Bash
 # 의존성: bash, coreutils, grep -E (jq 불필요)
 set -u
@@ -13,6 +14,9 @@ MODIFIED="$MEM/MODIFIED_FILES.md"
 QA="$MEM/QA.md"
 METRICS="$MEM/METRICS.md"
 NOW="$(date '+%Y-%m-%d %H:%M')"
+
+# 셀프체크 리마인더 주입 주기(수정 건수 기준). 1 이면 매번.
+REMIND_EVERY=3
 
 RAW="$(cat)"
 
@@ -49,7 +53,15 @@ MODIFIED_COUNT=0
 case "$TOOL_NAME" in
   Edit|Write|MultiEdit|NotebookEdit)
     if [ -n "$FILE_PATH" ]; then
-      REL="${FILE_PATH#$PROJECT_ROOT/}"
+      # Windows 경로(백슬래시)도 다루기 위해 슬래시로 정규화한 뒤 프로젝트 루트를 자른다.
+      NORM="$(printf '%s' "$FILE_PATH" | tr '\\' '/')"
+      ROOT_NORM="$(printf '%s' "$PROJECT_ROOT" | tr '\\' '/')"
+      REL="${NORM#$ROOT_NORM/}"
+      # 루트를 못 자른 경우(드라이브 표기 차이 등)에는 파일명만 남긴다.
+      case "$REL" in
+        "$NORM") REL="${NORM##*/}" ;;
+      esac
+      BASE="${REL##*/}"
       printf '| %s | %s | 도구 사용 | %s |\n' "$NOW" "$REL" "$TOOL_NAME" >> "$MODIFIED"
       MODIFIED_COUNT=1
     else
@@ -75,25 +87,24 @@ if [ "$MODIFIED_COUNT" -eq 0 ]; then
   exit 0
 fi
 
-TOTAL="$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MODIFIED" 2>/dev/null || echo 0)"
+TOTAL="$(grep -cE '^\| [0-9]{4}-[0-9]{2}-[0-9]{2}' "$MODIFIED" 2>/dev/null | head -1)"
+[ -z "$TOTAL" ] && TOTAL=0
 
-MSG="[셀프체크 리마인더]
-- 방금 수정: $REL (이번 세션 누적 $TOTAL 건)
-- 에러 처리와 예외 경로를 추가했는가? 빠진 오류 처리가 없는지 확인한다."
+# 보안 관련 파일이면 건수와 무관하게 즉시 알린다. 그 외에는 REMIND_EVERY 건마다 한 번만.
+# 매칭은 경로 전체가 아니라 파일명으로 한다. 상위 경로 단어에 의한 오탐을 막는다.
+IS_SEC=0
+printf '%s' "$BASE" | grep -qiE 'auth|login|token|password|secret|credential|permission|인증|권한|비밀|토큰' && IS_SEC=1
 
-# 절대경로가 아니라 프로젝트 상대경로로 판단한다. 홈/마운트 경로에 session 같은 단어가 들어가 오탐하는 것을 막는다.
-if printf '%s' "$REL" | grep -qiE 'auth|login|token|password|secret|credential|session|permission|인증|권한|비밀|토큰'; then
-  MSG="$MSG
-- 보안상 위험한 부분은 없는가? 인증/권한/입력 검증/secret 노출을 점검하고 security-reviewer 서브에이전트 검토를 받는다.
-- 검토 보고는 QA.md 의 \`## security-reviewer 보고\` 헤더 아래에 남긴다. 이 헤더가 없으면 Stop 게이트가 종료를 막는다."
-else
-  MSG="$MSG
-- 보안상 위험한 부분은 없는가? 입력 검증과 secret 노출 여부를 확인한다."
+if [ "$IS_SEC" -eq 0 ] && [ "$((TOTAL % REMIND_EVERY))" -ne 0 ]; then
+  exit 0
 fi
 
-if [ "$TOTAL" -ge 5 ]; then
-  MSG="$MSG
-- 수정 파일이 $TOTAL 건이다. reviewer 서브에이전트로 코드 검토를 권장한다."
+if [ "$IS_SEC" -eq 1 ]; then
+  MSG="[셀프체크] $REL (누적 $TOTAL 건)
+- 인증/권한/입력 검증/secret 노출을 점검한다. security-reviewer 보고는 QA.md 의 \`## security-reviewer 보고\` 헤더 아래에 남긴다."
+else
+  MSG="[셀프체크] $REL (누적 $TOTAL 건)
+- 오류 처리, 예외 경로, 입력 검증 누락을 확인한다."
 fi
 
 ESCAPED="$(printf '%s' "$MSG" | json_escape)"
